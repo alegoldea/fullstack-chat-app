@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import { ChatContext } from "../context/ChatProvider";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModel from "./miscellaneous/ProfileModel";
+import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat } = useContext(ChatContext);
@@ -34,13 +35,26 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             ) : (
               <>
                 {selectedChat.chatName.toUpperCase()}
-                {/* <UpdateGroupChatModal
+                <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
-                /> */}
+                />
               </>
             )}
           </Text>
+          <Box
+            flexDir="column"
+            p={3}
+            bg="#E8E8E8"
+            w="100%"
+            h="100%"
+            borderRadius="lg"
+            d="flex"
+            justifyContent="flex-end"
+            overflowY="hidden"
+          >
+            {/* Messages  */}
+          </Box>
         </>
       ) : (
         <Box d="flex" alignItems="center" justifyContent="center" h="100%">
