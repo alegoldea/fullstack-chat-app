@@ -1,10 +1,7 @@
 import { Avatar, Box, Text } from "@chakra-ui/react";
-import React, { useContext } from "react";
-import { ChatContext } from "../../context/ChatProvider";
+import React from "react";
 
-const UserListItem = ({ handleFunction }) => {
-  const { user } = useContext(ChatContext);
-
+const UserListItem = ({ user, handleFunction }) => {
   return (
     <Box
       onClick={handleFunction}
