@@ -43,6 +43,7 @@ const MyChats = ({ fetchAgain }) => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
 
   return (
@@ -100,12 +101,21 @@ const MyChats = ({ fetchAgain }) => {
                 borderRadius="lg"
                 key={chat._id}
               >
-                <Text>
+                <Text fontSize="2xl" color="blue.500">
                   {!chat.isGroupChat
                     ? chat.users[0]._id === user._id
                       ? chat.users[1].name
                       : chat.users[0].name
                     : chat.chatName}
+                </Text>
+                <Text>
+                  {!chat.latestMessage ? (
+                    <></>
+                  ) : (
+                    chat.latestMessage.sender.name +
+                    " : " +
+                    chat.latestMessage.content
+                  )}
                 </Text>
               </Box>
             ))}
