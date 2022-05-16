@@ -7,6 +7,7 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  VStack,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect } from "react";
 import { ChatContext } from "../../context/ChatProvider";
@@ -64,7 +65,7 @@ const MyChats = ({ fetchAgain }) => {
       borderRadius="lg"
       borderWidth="1px"
     >
-      <Box
+      <VStack
         pb={3}
         px={3}
         fontSize={{ base: "28px", md: "30px" }}
@@ -84,7 +85,7 @@ const MyChats = ({ fetchAgain }) => {
             New Group Chat
           </Button>
         </GroupChatModal>
-      </Box>
+      </VStack>
       <Box
         d="flex"
         flexDir="column"
@@ -96,7 +97,7 @@ const MyChats = ({ fetchAgain }) => {
         overflowY="hidden"
       >
         {chats ? (
-          <Stack overflowY="scroll">
+          <Stack overflowY="hidden">
             {chats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
@@ -120,7 +121,9 @@ const MyChats = ({ fetchAgain }) => {
                     <></>
                   )}
                   <Text fontSize="xl" color="blue.500" ml="2">
-                    {getSender(user, chat.users)}
+                    {!chat.isGroupChat
+                      ? getSender(user, chat.users)
+                      : chat.chatName}
                   </Text>
                 </HStack>
                 <Text>

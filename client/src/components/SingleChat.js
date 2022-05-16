@@ -57,6 +57,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         console.log(data);
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        setFetchAgain(!fetchAgain);
       } catch (error) {
         toast({
           title: "Error occured",
@@ -107,6 +108,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      socket.off("connected");
+      socket.off("typing");
+      socket.off("stop typing");
+    };
   }, []);
 
   useEffect(() => {
@@ -129,6 +135,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setMessages([...messages, newMessageReceived]);
       }
     });
+    return () => {
+      socket.off("message received");
+    };
   });
 
   const typingHandler = (e) => {
