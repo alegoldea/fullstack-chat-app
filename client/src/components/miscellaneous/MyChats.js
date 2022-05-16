@@ -111,6 +111,8 @@ const MyChats = ({ fetchAgain }) => {
                 <Text>
                   {!chat.latestMessage ? (
                     <></>
+                  ) : chat.latestMessage.sender._id === user._id ? (
+                    "You" + " : " + chat.latestMessage.content
                   ) : (
                     chat.latestMessage.sender.name +
                     " : " +
