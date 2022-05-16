@@ -11,11 +11,17 @@ import { ChatContext } from "../context/ChatProvider";
 
 const ScrollableChat = ({ messages }) => {
   const { user } = useContext(ChatContext);
+
   return (
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
-          <div style={{ display: "flex" }} key={m._id}>
+          <div
+            style={{
+              display: "flex",
+            }}
+            key={m._id}
+          >
             {isSameSender(messages, m, i, user._id) ||
             isLastMessage(messages, i, user._id) ? (
               <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>

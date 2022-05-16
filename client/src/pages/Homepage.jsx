@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Container, Box, Text } from "@chakra-ui/react";
+import { Container, Box, Text, useColorModeValue } from "@chakra-ui/react";
 import { TabList, Tab, Tabs, TabPanel, TabPanels } from "@chakra-ui/react";
 import Login from "../components/authentication/Login";
 import Signup from "../components/authentication/Signup";
@@ -21,7 +21,7 @@ const Homepage = () => {
         d="flex"
         justifyContent="center"
         p={3}
-        bg={"white"}
+        bg={useColorModeValue("white", "gray.700")}
         w="100%"
         m="40px 0 15px 0"
         borderRadius="lg"
@@ -31,7 +31,13 @@ const Homepage = () => {
           Fullstack Chat App
         </Text>
       </Box>
-      <Box p={4} bg={"white"} w="100%" borderRadius="lg" borderWidth="1px">
+      <Box
+        p={4}
+        bg={useColorModeValue("white", "gray.700")}
+        w="100%"
+        borderRadius="lg"
+        borderWidth="1px"
+      >
         <Tabs variant="soft-rounded">
           <TabList mb="1em">
             <Tab width="50%">Login</Tab>

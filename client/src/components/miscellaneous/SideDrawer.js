@@ -7,7 +7,6 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  effect,
   Input,
   Menu,
   MenuButton,
@@ -17,6 +16,7 @@ import {
   Spinner,
   Text,
   Tooltip,
+  useColorModeValue,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
@@ -31,6 +31,7 @@ import UserListItem from "../userAvatar/UserListItem";
 import { getSender } from "../../config/ChatLogics";
 import { Effect } from "react-notification-badge";
 import NotificationBadge from "react-notification-badge";
+import ToggleTheme from "../theme/ToggleTheme";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -134,7 +135,7 @@ const SideDrawer = () => {
         d="flex"
         justifyContent="space-between"
         alignItems="center"
-        bg="white"
+        bg={useColorModeValue("white", "gray.700")}
         w="100%"
         p="5px 10px 5px 10 px"
         borderWidth="5px"
@@ -151,6 +152,9 @@ const SideDrawer = () => {
           Fullstack chatapp
         </Text>
         <div>
+          <Menu>
+            <ToggleTheme />
+          </Menu>
           <Menu>
             <MenuButton p={1}>
               <NotificationBadge

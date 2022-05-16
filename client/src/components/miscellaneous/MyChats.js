@@ -1,14 +1,22 @@
-import { Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  HStack,
+  Stack,
+  Text,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react";
+import React, { useContext, useEffect } from "react";
 import { ChatContext } from "../../context/ChatProvider";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
 import ChatLoading from "../ChatLoading";
-import { getSender } from "../../config/ChatLogics";
+import { getSender, getSenderFull } from "../../config/ChatLogics";
 import GroupChatModal from "./GroupChatModal";
 
 const MyChats = ({ fetchAgain }) => {
-  const [loggedUser, setLoggedUser] = useState();
   const toast = useToast();
   const { selectedChat, setSelectedChat, user, chats, setChats } =
     useContext(ChatContext);
@@ -41,7 +49,6 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
@@ -52,7 +59,7 @@ const MyChats = ({ fetchAgain }) => {
       flexDir="column"
       alignItems="center"
       p={3}
-      bg="white"
+      bg={useColorModeValue("white", "gray.700")}
       w={{ base: "100%", md: "31%" }}
       borderRadius="lg"
       borderWidth="1px"
@@ -67,7 +74,7 @@ const MyChats = ({ fetchAgain }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        My Chats
+        <Text> My Chat </Text>
         <GroupChatModal>
           <Button
             d="flex"
@@ -82,7 +89,7 @@ const MyChats = ({ fetchAgain }) => {
         d="flex"
         flexDir="column"
         p={3}
-        bg="#F8F8F8"
+        bg={useColorModeValue("white", "gray.700")}
         w="100%"
         h="100%"
         borderRadius="lg"
@@ -101,22 +108,28 @@ const MyChats = ({ fetchAgain }) => {
                 borderRadius="lg"
                 key={chat._id}
               >
-                <Text fontSize="2xl" color="blue.500">
-                  {!chat.isGroupChat
-                    ? chat.users[0]._id === user._id
-                      ? chat.users[1].name
-                      : chat.users[0].name
-                    : chat.chatName}
-                </Text>
+                <HStack spacing="20px">
+                  {!chat.isGroupChat ? (
+                    <Avatar
+                      size="sm"
+                      cursor="pointer"
+                      name={getSenderFull(user, chat.users).name}
+                      src={getSenderFull(user, chat.users).pic}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  <Text fontSize="xl" color="blue.500" ml="2">
+                    {getSender(user, chat.users)}
+                  </Text>
+                </HStack>
                 <Text>
                   {!chat.latestMessage ? (
                     <></>
                   ) : chat.latestMessage.sender._id === user._id ? (
-                    "You" + " : " + chat.latestMessage.content
+                    `You: ${chat.latestMessage.content}`
                   ) : (
-                    chat.latestMessage.sender.name +
-                    " : " +
-                    chat.latestMessage.content
+                    `${chat.latestMessage.sender.name} : ${chat.latestMessage.content}`
                   )}
                 </Text>
               </Box>
