@@ -132,6 +132,7 @@ const MyChats = ({ fetchAgain }) => {
                       size="sm"
                       cursor="pointer"
                       name={chat.chatName}
+                      src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
                     />
                   )}
                 </Box>
@@ -141,7 +142,7 @@ const MyChats = ({ fetchAgain }) => {
                   pl="1"
                   _dark={{ color: "white" }}
                   boxSizing="border-box"
-                  w="350px"
+                  w="250px"
                   h="50px"
                   textOverflow="ellipsis"
                 >

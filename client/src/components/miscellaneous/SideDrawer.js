@@ -52,6 +52,7 @@ const SideDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logoutHandler = () => {
+    setSelectedChat();
     localStorage.removeItem("userInfo");
     navigate("/");
   };

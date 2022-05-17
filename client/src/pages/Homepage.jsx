@@ -23,7 +23,7 @@ const Homepage = () => {
         p={3}
         bg={useColorModeValue("white", "gray.700")}
         w="100%"
-        m="160px 0 15px 0"
+        m="80px 0 15px 0"
         borderRadius="lg"
         borderWidth="1px"
       >

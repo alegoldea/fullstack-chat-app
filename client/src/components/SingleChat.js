@@ -1,7 +1,8 @@
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import {
   Box,
   FormControl,
+  HStack,
   IconButton,
   Input,
   Spinner,
@@ -35,7 +36,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     useContext(ChatContext);
 
   const sendMessage = async (e) => {
-    if (e.key === "Enter" && newMessage) {
+    if (newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -68,6 +69,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           position: "bottom",
         });
       }
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    //it triggers by pressing the enter key
+    if (e.key === "Enter") {
+      sendMessage();
     }
   };
 
@@ -221,16 +229,29 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
-            <FormControl onKeyDown={sendMessage} isRequired mt={3}>
+            <FormControl onKeyDown={handleKeyPress} isRequired mt={3}>
               {isTyping ? <TypingAnimation /> : <></>}
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                _dark={{ bg: "gray.700", color: "white" }}
-                placeholder="Enter a message"
-                onChange={typingHandler}
-                value={newMessage}
-              />
+              <HStack d="flex" flexDir="row" justifyContent="space-between">
+                <Input
+                  variant="filled"
+                  bg="#E0E0E0"
+                  _dark={{ bg: "gray.700", color: "white" }}
+                  placeholder="Enter a message"
+                  onChange={typingHandler}
+                  value={newMessage}
+                />
+                <IconButton
+                  colorScheme="purple"
+                  rounded="lg"
+                  width="20"
+                  icon={<ArrowRightIcon />}
+                  onClick={sendMessage}
+                  type="submit"
+                  onSubmit={sendMessage}
+                >
+                  Press
+                </IconButton>
+              </HStack>
             </FormControl>
           </Box>
         </>
