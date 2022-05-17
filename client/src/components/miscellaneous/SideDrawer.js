@@ -137,8 +137,9 @@ const SideDrawer = () => {
         alignItems="center"
         bg={useColorModeValue("white", "gray.700")}
         w="100%"
-        p="5px 10px 5px 10 px"
+        p="5px 10px 5px 10px"
         borderWidth="5px"
+        borderRadius="lg"
       >
         <Tooltip label="Search user to chat" hasArrow placement="bottom-end">
           <Button variant="ghost" onClick={onOpen}>

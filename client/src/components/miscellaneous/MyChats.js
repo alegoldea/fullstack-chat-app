@@ -75,12 +75,13 @@ const MyChats = ({ fetchAgain }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Text> My Chat </Text>
+        <Text fontWeight="900"> Chats </Text>
         <GroupChatModal>
           <Button
             d="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
             rightIcon={<AddIcon />}
+            colorScheme="purple"
           >
             New Group Chat
           </Button>
@@ -97,21 +98,27 @@ const MyChats = ({ fetchAgain }) => {
         overflowY="hidden"
       >
         {chats ? (
-          <Stack overflowY="hidden">
+          <Stack overflowY="scroll">
             {chats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
                 px={3}
                 py={2}
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
+                bg={selectedChat === chat ? "#9370DB" : "white"}
+                _dark={{ bg: selectedChat === chat ? "#9370DB" : "gray.700" }}
                 color={selectedChat === chat ? "white" : "black"}
                 borderRadius="lg"
                 key={chat._id}
+                d="flex"
+                flexDir="row"
               >
-                <HStack spacing="20px">
+                <Box spacing="20px" mr="4" flexDir="column">
                   {!chat.isGroupChat ? (
                     <Avatar
+                      rounded="full"
+                      h="10"
+                      w="10"
                       size="sm"
                       cursor="pointer"
                       name={getSenderFull(user, chat.users).name}
@@ -120,21 +127,28 @@ const MyChats = ({ fetchAgain }) => {
                   ) : (
                     <></>
                   )}
-                  <Text fontSize="xl" color="blue.500" ml="2">
+                </Box>
+                <Box
+                  d="flex"
+                  flexDir="column"
+                  pl="1"
+                  _dark={{ color: "white" }}
+                >
+                  <Text fontSize="md" fontWeight="700">
                     {!chat.isGroupChat
                       ? getSender(user, chat.users)
                       : chat.chatName}
                   </Text>
-                </HStack>
-                <Text>
-                  {!chat.latestMessage ? (
-                    <></>
-                  ) : chat.latestMessage.sender._id === user._id ? (
-                    `You: ${chat.latestMessage.content}`
-                  ) : (
-                    `${chat.latestMessage.sender.name} : ${chat.latestMessage.content}`
-                  )}
-                </Text>
+                  <Text fontSize="sm" _dark={{ color: "gray.300" }}>
+                    {!chat.latestMessage ? (
+                      <></>
+                    ) : chat.latestMessage.sender._id === user._id ? (
+                      `You: ${chat.latestMessage.content}`
+                    ) : (
+                      `${chat.latestMessage.sender.name} : ${chat.latestMessage.content}`
+                    )}
+                  </Text>
+                </Box>
               </Box>
             ))}
           </Stack>

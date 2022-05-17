@@ -113,6 +113,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.off("typing");
       socket.off("stop typing");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -199,6 +200,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             flexDir="column"
             p={3}
             bg="#E8E8E8"
+            _dark={{ bg: "gray.700" }}
             w="100%"
             h="100%"
             borderRadius="lg"

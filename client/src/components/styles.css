@@ -34,3 +34,13 @@
         opacity: 1;
     }
 }
+
+/* @media (prefers-color-scheme: dark) {
+    scrollable.dark-scheme { background-color: gray.700;}
+}
+
+@media (prefers-color-scheme: dark) {
+    scrollable.light-scheme {
+        background-color: gray.300;
+    }
+} */
