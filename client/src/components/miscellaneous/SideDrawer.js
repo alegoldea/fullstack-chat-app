@@ -149,8 +149,8 @@ const SideDrawer = () => {
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          Fullstack chatapp
+        <Text fontSize="3xl" fontWeight="800" fontFamily="Work sans">
+          Fullstack Chatapp
         </Text>
         <div>
           <Menu>

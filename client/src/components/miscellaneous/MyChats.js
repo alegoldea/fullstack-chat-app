@@ -125,7 +125,14 @@ const MyChats = ({ fetchAgain }) => {
                       src={getSenderFull(user, chat.users).pic}
                     />
                   ) : (
-                    <></>
+                    <Avatar
+                      rounded="full"
+                      h="10"
+                      w="10"
+                      size="sm"
+                      cursor="pointer"
+                      name={chat.chatName}
+                    />
                   )}
                 </Box>
                 <Box
@@ -133,13 +140,17 @@ const MyChats = ({ fetchAgain }) => {
                   flexDir="column"
                   pl="1"
                   _dark={{ color: "white" }}
+                  boxSizing="border-box"
+                  w="350px"
+                  h="50px"
+                  textOverflow="ellipsis"
                 >
                   <Text fontSize="md" fontWeight="700">
                     {!chat.isGroupChat
                       ? getSender(user, chat.users)
                       : chat.chatName}
                   </Text>
-                  <Text fontSize="sm" _dark={{ color: "gray.300" }}>
+                  <Text isTruncated fontSize="sm" _dark={{ color: "gray.300" }}>
                     {!chat.latestMessage ? (
                       <></>
                     ) : chat.latestMessage.sender._id === user._id ? (
