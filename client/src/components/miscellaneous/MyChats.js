@@ -157,7 +157,11 @@ const MyChats = ({ fetchAgain }) => {
                     ) : chat.latestMessage.sender._id === user._id ? (
                       `You: ${chat.latestMessage.content}`
                     ) : (
-                      `${chat.latestMessage.sender.name} : ${chat.latestMessage.content}`
+                      `${chat.latestMessage.sender.name} : ${
+                        selectedChat.images.includes(chat.latestMessage.content)
+                          ? "sent an image"
+                          : chat.latestMessage.content
+                      }`
                     )}
                   </Text>
                 </Box>

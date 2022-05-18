@@ -33,6 +33,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
   const toast = useToast();
   const inputFile = useRef(null);
   const submitMessage = useRef(null);
@@ -135,7 +136,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           console.log(data.url.toString());
           await addChatImage(data.url.toString());
           setNewMessage(data.url.toString());
-          sendMessage();
+          setUploaded(!uploaded);
           setFetchAgain(!fetchAgain);
         })
         .catch((err) => {
@@ -233,6 +234,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.off("message received");
     };
   });
+
+  useEffect(() => {
+    sendMessage().catch(console.error);
+  }, [uploaded]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
