@@ -18,6 +18,7 @@ const chatModel = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    images: [{ type: String, trim: true }],
   },
   {
     timestamps: true,

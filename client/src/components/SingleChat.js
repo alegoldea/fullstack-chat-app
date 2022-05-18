@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { ChatContext } from "../context/ChatProvider";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModel from "./miscellaneous/ProfileModel";
@@ -34,21 +34,42 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const toast = useToast();
+  const inputFile = useRef(null);
+  const submitMessage = useRef(null);
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
 
-  const getCloudinary = () => {
-    fetch("https://api.cloudinary.com/v1_1/djeo89oo1/resources/image", {
-      method: "get",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.url.toString());
-      })
-      .catch((err) => {
-        console.log(err);
+  const addChatImage = async (imageURL) => {
+    if (!imageURL) {
+      console.log("Image URL not defined");
+    }
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        "http://localhost:5000/api/chat/addimage",
+        {
+          chatId: selectedChat._id,
+          imageURL: imageURL,
+        },
+        config
+      );
+      setSelectedChat(data);
+    } catch (error) {
+      toast({
+        title: "Error occured",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
       });
+    }
   };
 
   const sendMessage = async (e) => {
@@ -88,6 +109,54 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  const handleImage = (pics) => {
+    if (pics === undefined) {
+      toast({
+        title: "Please select an image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+    console.log(pics);
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "fullstack-chatapp");
+      data.append("cloud_name", "djeo89oo1");
+      fetch("https://api.cloudinary.com/v1_1/djeo89oo1/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then(async function (data) {
+          console.log(data.url.toString());
+          await addChatImage(data.url.toString());
+          setNewMessage(data.url.toString());
+          sendMessage();
+          setFetchAgain(!fetchAgain);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      toast({
+        title: "Not an image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+  };
+
+  const handleClick = () => {
+    inputFile.current.click();
+  };
+
   const handleKeyPress = (e) => {
     //it triggers by pressing the enter key
     if (e.key === "Enter") {
@@ -109,7 +178,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         config
       );
 
-      console.log(messages);
+      //console.log(messages);
       setMessages(data);
       setLoading(false);
       socket.emit("join chat", selectedChat._id);
@@ -206,12 +275,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             />
             {!selectedChat.isGroupChat ? (
               <>
-                {getSender(user, selectedChat.users).toUpperCase()}
+                {getSender(user, selectedChat.users)?.toUpperCase()}
                 <ProfileModel user={getSenderFull(user, selectedChat.users)} />
               </>
             ) : (
               <>
-                {selectedChat.chatName.toUpperCase()}
+                {selectedChat.chatName?.toUpperCase()}
                 <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}
@@ -256,11 +325,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   onChange={typingHandler}
                   value={newMessage}
                 />
+                <Input
+                  type="file"
+                  p={1.5}
+                  accept="image/*"
+                  ref={inputFile}
+                  style={{ display: "none" }}
+                  onChange={(e) => handleImage(e.target.files[0])}
+                />
                 <Button
                   colorScheme="purple"
                   rounded="lg"
                   width="20"
-                  onClick={getCloudinary}
+                  onClick={handleClick}
                 >
                   <FontAwesomeIcon icon={faFileImage} />
                 </Button>
@@ -268,6 +345,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   colorScheme="purple"
                   rounded="lg"
                   width="20"
+                  ref={submitMessage}
                   onClick={sendMessage}
                   type="submit"
                 >

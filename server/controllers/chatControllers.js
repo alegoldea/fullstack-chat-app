@@ -33,6 +33,7 @@ const accessChat = asyncHandler(async (req, res) => {
       chatName: "sender",
       isGroupChat: false,
       users: [req.user._id, userId],
+      images: [],
     };
 
     try {
@@ -88,6 +89,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
       users: users,
       isGroupChat: true,
       groupAdmin: req.user,
+      image: [],
     });
 
     const FullGroupChat = await Chat.findOne({
@@ -160,6 +162,22 @@ const removeFromGroup = asyncHandler(async (req, res) => {
   }
 });
 
+const addImage = asyncHandler(async (req, res) => {
+  const { chatId, imageURL } = req.body;
+  const added = await Chat.findByIdAndUpdate(
+    chatId,
+    { $push: { images: imageURL } },
+    { new: true }
+  );
+
+  if (!added) {
+    res.status(404);
+    throw new Error("Chat not found");
+  } else {
+    res.json(added);
+  }
+});
+
 module.exports = {
   accessChat,
   fetchChats,
@@ -167,4 +185,5 @@ module.exports = {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  addImage,
 };
