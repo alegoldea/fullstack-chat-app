@@ -1,4 +1,4 @@
-import { ArrowBackIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -6,8 +6,13 @@ import {
   HStack,
   IconButton,
   Input,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
   Spinner,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -22,6 +27,7 @@ import io from "socket.io-client";
 import TypingAnimation from "./TypingAnimation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImage, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import EmojiPicker from "./EmojiPicker";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -339,6 +345,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   style={{ display: "none" }}
                   onChange={(e) => handleImage(e.target.files[0])}
                 />
+                <EmojiPicker />
                 <Button
                   colorScheme="purple"
                   rounded="lg"

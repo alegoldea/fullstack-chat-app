@@ -37,6 +37,12 @@
     }
 }
 
+.custom-dialog {
+    position: absolute;
+    bottom: 60px;
+    right: 100px;
+}
+
 /* @media (prefers-color-scheme: dark) {
     scrollable.dark-scheme { background-color: gray.700;}
 }

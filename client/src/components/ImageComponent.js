@@ -4,14 +4,10 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
 
 const ImageComponent = ({ src }) => {
-  const [state, setState] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   //   const handleShowDialog = () => {
@@ -28,7 +24,7 @@ const ImageComponent = ({ src }) => {
         alt="Image"
         objectFit="contain"
         maxH="300px"
-        maxW="200px"
+        maxW="400px"
       />
       {
         <>
