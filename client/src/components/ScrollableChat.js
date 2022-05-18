@@ -1,4 +1,4 @@
-import { AspectRatio, Avatar, Box, Image, Tooltip } from "@chakra-ui/react";
+import { Avatar, Image, Tooltip } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import ScrollableFeed from "react-scrollable-feed";
 import {
@@ -8,6 +8,7 @@ import {
   isSameUser,
 } from "../config/ChatLogics";
 import { ChatContext } from "../context/ChatProvider";
+import ImageComponent from "./ImageComponent";
 import "./styles.css";
 
 const ScrollableChat = ({ messages }) => {
@@ -56,13 +57,7 @@ const ScrollableChat = ({ messages }) => {
               }}
             >
               {selectedChat.images.includes(m.content) ? (
-                <Image
-                  width="auto"
-                  height="auto"
-                  boxSize={{ lg: "300px", md: "200px", sm: "100px" }}
-                  src={m.content}
-                  alt="picture"
-                />
+                <ImageComponent src={m.content} />
               ) : (
                 m.content
               )}
