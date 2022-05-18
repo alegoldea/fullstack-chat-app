@@ -237,6 +237,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     sendMessage().catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploaded]);
 
   const typingHandler = (e) => {

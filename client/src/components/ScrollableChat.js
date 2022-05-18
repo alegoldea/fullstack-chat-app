@@ -57,6 +57,8 @@ const ScrollableChat = ({ messages }) => {
             >
               {selectedChat.images.includes(m.content) ? (
                 <Image
+                  width="auto"
+                  height="auto"
                   boxSize={{ lg: "300px", md: "200px", sm: "100px" }}
                   src={m.content}
                   alt="picture"
