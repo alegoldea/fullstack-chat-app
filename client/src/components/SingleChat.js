@@ -1,6 +1,7 @@
 import { ArrowBackIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   FormControl,
   HStack,
   IconButton,
@@ -19,6 +20,8 @@ import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import TypingAnimation from "./TypingAnimation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileImage, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -34,6 +37,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
+
+  const getCloudinary = () => {
+    fetch("https://api.cloudinary.com/v1_1/djeo89oo1/resources/image", {
+      method: "get",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.url.toString());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const sendMessage = async (e) => {
     if (newMessage) {
@@ -240,17 +256,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   onChange={typingHandler}
                   value={newMessage}
                 />
-                <IconButton
+                <Button
                   colorScheme="purple"
                   rounded="lg"
                   width="20"
-                  icon={<ArrowRightIcon />}
+                  onClick={getCloudinary}
+                >
+                  <FontAwesomeIcon icon={faFileImage} />
+                </Button>
+                <Button
+                  colorScheme="purple"
+                  rounded="lg"
+                  width="20"
                   onClick={sendMessage}
                   type="submit"
-                  onSubmit={sendMessage}
                 >
-                  Press
-                </IconButton>
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </Button>
               </HStack>
             </FormControl>
           </Box>
