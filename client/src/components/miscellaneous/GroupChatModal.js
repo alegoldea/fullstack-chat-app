@@ -161,7 +161,7 @@ const GroupChatModal = ({ children }) => {
               {selectedUsers.map((u) => (
                 <UserBadgeItem
                   key={u._id}
-                  user={u}
+                  content={u.name}
                   handleFunction={() => handleDelete(u)}
                 />
               ))}

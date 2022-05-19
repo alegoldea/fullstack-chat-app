@@ -48,7 +48,9 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     const newAdmin =
       selectedChat.groupAdmin._id !== user1._id
         ? selectedChat.groupAdmin._id
-        : selectedChat.users[0]._id;
+        : selectedChat.users.length - 1 > 1
+        ? selectedChat.users[selectedChat.users.length - 2]._id
+        : user1._id;
 
     try {
       setLoading(true);
@@ -67,6 +69,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         config
       );
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
+      console.log("removed-----------", data);
       setFetchAgain(!fetchAgain);
       fetchMessages();
       setLoading(false);
@@ -222,8 +225,12 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
             <Box w="100%" d="flex" flexWrap="wrap" pb={3}>
               {selectedChat.users.map((u) => (
                 <UserBadgeItem
-                  key={user._id}
-                  user={u}
+                  key={u._id}
+                  content={
+                    selectedChat.groupAdmin._id !== u._id
+                      ? u.name
+                      : `${u.name} - administrator`
+                  }
                   handleFunction={() => handleRemove(u)}
                 />
               ))}
@@ -238,6 +245,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
             >
               {selectedChat.users.slice(0, 7).map((u) => (
                 <Image
+                  key={u._id}
                   src={u.pic}
                   alt="default"
                   w="50px"

@@ -59,25 +59,7 @@ const ProfileModel = ({ user, children }) => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Box
-              as="div"
-              position="relative"
-              w="150px"
-              h="150px"
-              _before={{
-                content: "''",
-                position: "relative",
-                display: "block",
-                width: "300%",
-                height: "300%",
-                boxSizing: "border-box",
-                marginLeft: "-100%",
-                marginTop: "-100%",
-                borderRadius: "50%",
-                bgColor: color,
-                animation: `2.25s ${pulseRing} cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite`,
-              }}
-            >
+            <Box as="div" position="relative" w="150px" h="150px">
               <Avatar
                 size="full"
                 position="absolute"

@@ -185,11 +185,12 @@ const SideDrawer = () => {
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               <Avatar
-                size="sm"
+                size="xs"
                 cursor="pointer"
                 name={user.name}
                 src={user.pic}
               />
+              <Text fontSize="xx-small">{user.name}</Text>
             </MenuButton>
             <MenuList>
               <ProfileModel user={user}>
