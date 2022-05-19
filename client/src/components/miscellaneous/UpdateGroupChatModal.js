@@ -4,6 +4,7 @@ import {
   Button,
   FormControl,
   IconButton,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -44,6 +45,11 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       return;
     }
 
+    const newAdmin =
+      selectedChat.groupAdmin._id !== user1._id
+        ? selectedChat.groupAdmin._id
+        : selectedChat.users[0]._id;
+
     try {
       setLoading(true);
       const config = {
@@ -55,6 +61,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         `http://localhost:5000/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
+          groupAdmin: newAdmin,
           userId: user1._id,
         },
         config
@@ -218,6 +225,26 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                   key={user._id}
                   user={u}
                   handleFunction={() => handleRemove(u)}
+                />
+              ))}
+            </Box>
+            <Box
+              h="70px"
+              d="flex"
+              flexDir="row-reverse"
+              gap="10px"
+              alignItems="center"
+              justifyContent="center"
+            >
+              {selectedChat.users.slice(0, 7).map((u) => (
+                <Image
+                  src={u.pic}
+                  alt="default"
+                  w="50px"
+                  h="50px"
+                  rounded="full"
+                  ringColor="white"
+                  marginRight="-1.5rem"
                 />
               ))}
             </Box>

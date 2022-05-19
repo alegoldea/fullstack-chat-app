@@ -72,6 +72,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         config
       );
       setSelectedChat(data);
+      //setFetchAgain(!fetchAgain);
     } catch (error) {
       toast({
         title: "Error occured",
@@ -107,7 +108,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         console.log(data);
         socket.emit("new message", data);
         setMessages([...messages, data]);
-        setFetchAgain(!fetchAgain);
       } catch (error) {
         toast({
           title: "Error occured",
@@ -147,7 +147,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           console.log(data.url.toString());
           await addChatImage(data.url.toString());
           setNewMessage(data.url.toString());
-          // setUploaded(!uploaded);
+          setUploaded(!uploaded);
           // setFetchAgain(!fetchAgain);
         })
         .catch((err) => {
@@ -252,10 +252,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       : setNewMessage(chosenEmoji?.emoji);
   }, [chosenEmoji]);
 
-  // useEffect(() => {
-  //   sendMessage().catch(console.error);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [uploaded]);
+  useEffect(() => {
+    sendMessage().catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uploaded]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);

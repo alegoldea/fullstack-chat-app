@@ -15,6 +15,8 @@ import { AddIcon } from "@chakra-ui/icons";
 import ChatLoading from "../ChatLoading";
 import { getSender, getSenderFull } from "../../config/ChatLogics";
 import GroupChatModal from "./GroupChatModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArchive } from "@fortawesome/free-solid-svg-icons";
 
 const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
@@ -104,7 +106,7 @@ const MyChats = ({ fetchAgain }) => {
                 cursor="pointer"
                 px={3}
                 py={2}
-                bg={selectedChat === chat ? "#9370DB" : "white"}
+                bg={selectedChat === chat ? "#9370DB" : "gray.200"}
                 _dark={{ bg: selectedChat === chat ? "#9370DB" : "gray.700" }}
                 color={selectedChat === chat ? "white" : "black"}
                 borderRadius="lg"
