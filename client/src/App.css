@@ -8,14 +8,27 @@
     background-position: center;
 }
 
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
     width: "0px";
 } 
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(red, green, blue, alpha);
+    background: rgba(red, green, blue, alpha); 
 }
 
 ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+} */
+
+.customized-scrollbar::-webkit-scrollbar {
+    width: 0px;
+}
+
+.customized-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(136, 136, 136, 0.281);
+}
+
+/* Handle on hover */
+.customized-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #555;
 }

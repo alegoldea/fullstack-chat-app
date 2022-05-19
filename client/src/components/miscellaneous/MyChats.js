@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   Button,
-  HStack,
   Stack,
   Text,
   useColorModeValue,
@@ -98,7 +97,7 @@ const MyChats = ({ fetchAgain }) => {
         overflowY="hidden"
       >
         {chats ? (
-          <Stack overflowY="scroll">
+          <Stack className="customized-scrollbar" overflowY="scroll">
             {chats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
@@ -156,7 +155,7 @@ const MyChats = ({ fetchAgain }) => {
                       <></>
                     ) : chat.latestMessage.sender._id === user._id ? (
                       `You: ${
-                        selectedChat?.images.includes(
+                        selectedChat?.images?.includes(
                           chat.latestMessage.content
                         )
                           ? "sent an image"
@@ -164,7 +163,7 @@ const MyChats = ({ fetchAgain }) => {
                       }`
                     ) : (
                       `${chat.latestMessage.sender.name} : ${
-                        selectedChat?.images.includes(
+                        selectedChat?.images?.includes(
                           chat.latestMessage.content
                         )
                           ? "sent an image"

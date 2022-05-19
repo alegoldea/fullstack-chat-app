@@ -1,4 +1,4 @@
-import { Avatar, Image, Tooltip } from "@chakra-ui/react";
+import { Avatar, Tooltip } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import ScrollableFeed from "react-scrollable-feed";
 import {

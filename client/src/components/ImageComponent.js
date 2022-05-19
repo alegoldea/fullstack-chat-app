@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Image, useDisclosure } from "@chakra-ui/react";
 import {
   Modal,
@@ -9,11 +9,6 @@ import {
 
 const ImageComponent = ({ src }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  //   const handleShowDialog = () => {
-  //     setState(!state);
-  //     console.log("clicked");
-  //   };
 
   return (
     <div>

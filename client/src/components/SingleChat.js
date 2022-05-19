@@ -6,13 +6,8 @@ import {
   HStack,
   IconButton,
   Input,
-  Modal,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
   Spinner,
   Text,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -26,8 +21,12 @@ import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import TypingAnimation from "./TypingAnimation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileImage, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import EmojiPicker from "./EmojiPicker";
+import {
+  faFileImage,
+  faPaperPlane,
+  faFaceSmile,
+} from "@fortawesome/free-solid-svg-icons";
+import Picker from "emoji-picker-react";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -43,9 +42,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const toast = useToast();
   const inputFile = useRef(null);
   const submitMessage = useRef(null);
+  const [picker, setPicker] = useState(false);
+  const [chosenEmoji, setChosenEmoji] = useState(null);
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
+
+  const onEmojiClick = (event, emojiObject) => {
+    setChosenEmoji(emojiObject);
+  };
 
   const addChatImage = async (imageURL) => {
     if (!imageURL) {
@@ -142,8 +147,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           console.log(data.url.toString());
           await addChatImage(data.url.toString());
           setNewMessage(data.url.toString());
-          setUploaded(!uploaded);
-          setFetchAgain(!fetchAgain);
+          // setUploaded(!uploaded);
+          // setFetchAgain(!fetchAgain);
         })
         .catch((err) => {
           console.log(err);
@@ -242,9 +247,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   });
 
   useEffect(() => {
-    sendMessage().catch(console.error);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploaded]);
+    newMessage
+      ? setNewMessage(newMessage + chosenEmoji?.emoji)
+      : setNewMessage(chosenEmoji?.emoji);
+  }, [chosenEmoji]);
+
+  // useEffect(() => {
+  //   sendMessage().catch(console.error);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [uploaded]);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -345,7 +356,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   style={{ display: "none" }}
                   onChange={(e) => handleImage(e.target.files[0])}
                 />
-                <EmojiPicker />
+                <Button
+                  colorScheme="purple"
+                  rounded="lg"
+                  width="20"
+                  onClick={() => setPicker(!picker)}
+                >
+                  <FontAwesomeIcon icon={faFaceSmile} />
+                </Button>
+                {picker && (
+                  <div className="custom-dialog">
+                    <Picker onEmojiClick={onEmojiClick} />
+                  </div>
+                )}
                 <Button
                   colorScheme="purple"
                   rounded="lg"
