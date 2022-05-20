@@ -11,7 +11,6 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-  keyframes,
   Box,
   Avatar,
 } from "@chakra-ui/react";
@@ -19,20 +18,6 @@ import React from "react";
 
 const ProfileModel = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const color = "teal";
-
-  const pulseRing = keyframes`
-	0% {
-    transform: scale(0.33);
-  }
-  40%,
-  50% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
-	`;
 
   return (
     <>

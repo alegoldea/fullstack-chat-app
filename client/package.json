@@ -16,6 +16,7 @@
     "axios": "^0.27.2",
     "emoji-picker-react": "^3.5.1",
     "framer-motion": "^6.3.3",
+    "moment": "^2.29.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-notification-badge": "^1.5.1",

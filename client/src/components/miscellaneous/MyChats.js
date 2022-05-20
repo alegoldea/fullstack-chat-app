@@ -15,8 +15,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import ChatLoading from "../ChatLoading";
 import { getSender, getSenderFull } from "../../config/ChatLogics";
 import GroupChatModal from "./GroupChatModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArchive } from "@fortawesome/free-solid-svg-icons";
+import { getDate } from "../../config/Functions";
 
 const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
@@ -152,27 +151,40 @@ const MyChats = ({ fetchAgain }) => {
                       ? getSender(user, chat.users)
                       : chat.chatName}
                   </Text>
-                  <Text isTruncated fontSize="sm" _dark={{ color: "gray.300" }}>
-                    {!chat.latestMessage ? (
-                      <></>
-                    ) : chat.latestMessage.sender._id === user._id ? (
-                      `You: ${
-                        selectedChat?.images?.includes(
-                          chat.latestMessage.content
-                        )
-                          ? "sent an image"
-                          : chat.latestMessage.content
-                      }`
-                    ) : (
-                      `${chat.latestMessage.sender.name} : ${
-                        selectedChat?.images?.includes(
-                          chat.latestMessage.content
-                        )
-                          ? "sent an image"
-                          : chat.latestMessage.content
-                      }`
-                    )}
-                  </Text>
+                  <Box d="flex" flexDir="row" justifyContent="space-between">
+                    <Text
+                      isTruncated
+                      fontSize="sm"
+                      _dark={{ color: "gray.300" }}
+                    >
+                      {!chat.latestMessage ? (
+                        <></>
+                      ) : chat.latestMessage.sender._id === user._id ? (
+                        `You: ${
+                          selectedChat?.images?.includes(
+                            chat.latestMessage.content
+                          )
+                            ? "sent an image"
+                            : chat.latestMessage.content
+                        }`
+                      ) : (
+                        `${chat.latestMessage.sender.name} : ${
+                          selectedChat?.images?.includes(
+                            chat.latestMessage.content
+                          )
+                            ? "sent an image"
+                            : chat.latestMessage.content
+                        }`
+                      )}
+                    </Text>
+                    <Text
+                      isTruncated
+                      fontSize="sm"
+                      _dark={{ color: "gray.300" }}
+                    >
+                      {getDate(chat.latestMessage.createdAt)}
+                    </Text>
+                  </Box>
                 </Box>
               </Box>
             ))}
