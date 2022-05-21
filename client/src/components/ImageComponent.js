@@ -9,9 +9,10 @@ import {
 
 const ImageComponent = ({ src }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const grabbingCursor = { cursor: "grabbing" };
 
   return (
-    <div>
+    <div style={grabbingCursor}>
       <Image
         className="small"
         src={src}
