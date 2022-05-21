@@ -146,7 +146,10 @@ const MyChats = ({ fetchAgain }) => {
                   h="50px"
                   textOverflow="ellipsis"
                 >
-                  <Text fontSize="md" fontWeight="700">
+                  <Text
+                    fontSize={{ base: "17px", md: "12px", lg: "md" }}
+                    fontWeight="700"
+                  >
                     {!chat.isGroupChat
                       ? getSender(user, chat.users)
                       : chat.chatName}
@@ -154,7 +157,7 @@ const MyChats = ({ fetchAgain }) => {
                   <Box d="flex" flexDir="row" justifyContent="space-between">
                     <Text
                       isTruncated
-                      fontSize="sm"
+                      fontSize={{ md: "xs", lg: "sm" }}
                       _dark={{ color: "gray.300" }}
                     >
                       {!chat.latestMessage ? (
@@ -179,10 +182,14 @@ const MyChats = ({ fetchAgain }) => {
                     </Text>
                     <Text
                       isTruncated
-                      fontSize="sm"
+                      fontSize={{ md: "xs", lg: "sm" }}
                       _dark={{ color: "gray.300" }}
                     >
-                      {getDate(chat.latestMessage.createdAt)}
+                      {!chat.latestMessage ? (
+                        <></>
+                      ) : (
+                        getDate(chat?.latestMessage?.createdAt)
+                      )}
                     </Text>
                   </Box>
                 </Box>

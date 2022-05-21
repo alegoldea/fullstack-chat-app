@@ -25,7 +25,7 @@ export const getDate = (dateStr) => {
   const timeDiff = currentDate.getTime() - date.getTime();
 
   if (timeDiff <= 89 * 60 * 1000) {
-    //Today, 2 hours ago
+    //Today, 2 hours ago (pot modifica 89 la 120)
     return moment(date).format("HH:mm");
   } else if (timeDiff <= 12 * 60 * 60 * 1000) {
     return moment(date, "YYYYMMDDHHmmss").fromNow();
