@@ -12,7 +12,7 @@ import ImageComponent from "./ImageComponent";
 import "./styles.css";
 
 const ScrollableChat = ({ messages }) => {
-  const { user, selectedChat } = useContext(ChatContext);
+  const { user } = useContext(ChatContext);
 
   return (
     <ScrollableFeed>
@@ -56,7 +56,9 @@ const ScrollableChat = ({ messages }) => {
                   : 10,
               }}
             >
-              {selectedChat.images.includes(m.content) ? (
+              {m.content.startsWith(
+                "http://res.cloudinary.com/djeo89oo1/image/upload"
+              ) ? (
                 <ImageComponent src={m.content} />
               ) : (
                 m.content

@@ -99,102 +99,107 @@ const MyChats = ({ fetchAgain }) => {
       >
         {chats ? (
           <Stack className="customized-scrollbar" overflowY="scroll">
-            {chats.map((chat) => (
-              <Box
-                onClick={() => setSelectedChat(chat)}
-                cursor="pointer"
-                px={3}
-                py={2}
-                bg={selectedChat === chat ? "#9370DB" : "gray.200"}
-                _dark={{ bg: selectedChat === chat ? "#9370DB" : "gray.700" }}
-                color={selectedChat === chat ? "white" : "black"}
-                borderRadius="lg"
-                key={chat._id}
-                d="flex"
-                flexDir="row"
-              >
-                <Box spacing="20px" mr="4" flexDir="column">
-                  {!chat.isGroupChat ? (
-                    <Avatar
-                      rounded="full"
-                      h="10"
-                      w="10"
-                      size="sm"
-                      cursor="pointer"
-                      name={getSenderFull(user, chat.users).name}
-                      src={getSenderFull(user, chat.users).pic}
-                    />
-                  ) : (
-                    <Avatar
-                      rounded="full"
-                      h="10"
-                      w="10"
-                      size="sm"
-                      cursor="pointer"
-                      name={chat.chatName}
-                      src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
-                    />
-                  )}
-                </Box>
+            {chats.map((chat) => {
+              console.log("MY CHATS:", chat, selectedChat);
+              return (
                 <Box
+                  onClick={() => setSelectedChat(chat)}
+                  cursor="pointer"
+                  px={3}
+                  py={2}
+                  bg={selectedChat?._id === chat._id ? "#9370DB" : "gray.200"}
+                  _dark={{
+                    bg: selectedChat?._id === chat._id ? "#9370DB" : "gray.700",
+                  }}
+                  color={selectedChat?._id === chat._id ? "white" : "black"}
+                  borderRadius="lg"
+                  key={chat._id}
                   d="flex"
-                  flexDir="column"
-                  pl="1"
-                  _dark={{ color: "white" }}
-                  boxSizing="border-box"
-                  w="250px"
-                  h="50px"
-                  textOverflow="ellipsis"
+                  flexDir="row"
                 >
-                  <Text
-                    fontSize={{ base: "17px", md: "12px", lg: "md" }}
-                    fontWeight="700"
+                  <Box spacing="20px" mr="4" flexDir="column">
+                    {!chat.isGroupChat ? (
+                      <Avatar
+                        rounded="full"
+                        h="10"
+                        w="10"
+                        size="sm"
+                        cursor="pointer"
+                        name={getSenderFull(user, chat.users).name}
+                        src={getSenderFull(user, chat.users).pic}
+                      />
+                    ) : (
+                      <Avatar
+                        rounded="full"
+                        h="10"
+                        w="10"
+                        size="sm"
+                        cursor="pointer"
+                        name={chat.chatName}
+                        src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
+                      />
+                    )}
+                  </Box>
+                  <Box
+                    d="flex"
+                    flexDir="column"
+                    pl="1"
+                    _dark={{ color: "white" }}
+                    boxSizing="border-box"
+                    w="250px"
+                    h="50px"
+                    textOverflow="ellipsis"
                   >
-                    {!chat.isGroupChat
-                      ? getSender(user, chat.users)
-                      : chat.chatName}
-                  </Text>
-                  <Box d="flex" flexDir="row" justifyContent="space-between">
                     <Text
-                      isTruncated
-                      fontSize={{ md: "xs", lg: "sm" }}
-                      _dark={{ color: "gray.300" }}
+                      fontSize={{ base: "17px", md: "12px", lg: "md" }}
+                      fontWeight="700"
                     >
-                      {!chat.latestMessage ? (
-                        <></>
-                      ) : chat.latestMessage.sender._id === user._id ? (
-                        `You: ${
-                          selectedChat?.images?.includes(
-                            chat.latestMessage.content
-                          )
-                            ? "sent an image"
-                            : chat.latestMessage.content
-                        }`
-                      ) : (
-                        `${chat.latestMessage.sender.name} : ${
-                          selectedChat?.images?.includes(
-                            chat.latestMessage.content
-                          )
-                            ? "sent an image"
-                            : chat.latestMessage.content
-                        }`
-                      )}
+                      {!chat.isGroupChat
+                        ? getSender(user, chat.users)
+                        : chat.chatName}
                     </Text>
-                    <Text
-                      isTruncated
-                      fontSize={{ md: "xs", lg: "sm" }}
-                      _dark={{ color: "gray.300" }}
-                    >
-                      {!chat.latestMessage ? (
-                        <></>
-                      ) : (
-                        getDate(chat?.latestMessage?.createdAt)
-                      )}
-                    </Text>
+                    <Box d="flex" flexDir="row" justifyContent="space-between">
+                      <Text
+                        isTruncated
+                        fontSize={{ md: "xs", lg: "sm" }}
+                        _dark={{ color: "gray.300" }}
+                      >
+                        {!chat.latestMessage ? (
+                          <></>
+                        ) : chat.latestMessage.sender._id === user._id ? (
+                          `You: ${
+                            selectedChat?.images?.includes(
+                              chat.latestMessage.content
+                            )
+                              ? "sent an image"
+                              : chat.latestMessage.content
+                          }`
+                        ) : (
+                          `${chat.latestMessage.sender.name} : ${
+                            selectedChat?.images?.includes(
+                              chat.latestMessage.content
+                            )
+                              ? "sent an image"
+                              : chat.latestMessage.content
+                          }`
+                        )}
+                      </Text>
+                      <Text
+                        isTruncated
+                        fontSize={{ md: "xs", lg: "sm" }}
+                        _dark={{ color: "gray.300" }}
+                      >
+                        {!chat.latestMessage ? (
+                          <></>
+                        ) : (
+                          getDate(chat?.latestMessage?.createdAt)
+                        )}
+                      </Text>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            ))}
+              );
+            })}
           </Stack>
         ) : (
           <ChatLoading />
