@@ -168,16 +168,16 @@ const MyChats = ({ fetchAgain }) => {
                           <></>
                         ) : chat.latestMessage.sender._id === user._id ? (
                           `You: ${
-                            selectedChat?.images?.includes(
-                              chat.latestMessage.content
+                            chat?.latestMessage?.content?.includes(
+                              "http://res.cloudinary.com/djeo89oo1/image/upload"
                             )
                               ? "sent an image"
                               : chat.latestMessage.content
                           }`
                         ) : (
                           `${chat.latestMessage.sender.name} : ${
-                            selectedChat?.images?.includes(
-                              chat.latestMessage.content
+                            chat?.latestMessage?.content?.includes(
+                              "http://res.cloudinary.com/djeo89oo1/image/upload"
                             )
                               ? "sent an image"
                               : chat.latestMessage.content
