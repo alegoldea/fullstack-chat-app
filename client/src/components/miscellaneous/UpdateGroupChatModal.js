@@ -33,8 +33,11 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
   const [renameLoading, setRenameLoading] = useState(false);
   const toast = useToast();
 
-  const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+  const handleRemove = async (userToRemove, currentIndex) => {
+    if (
+      selectedChat.groupAdmin._id !== user._id &&
+      userToRemove._id !== user._id
+    ) {
       toast({
         title: "Only admins can remove from group",
         status: "error",
@@ -45,12 +48,17 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       return;
     }
 
-    const newAdmin =
-      selectedChat.groupAdmin._id !== user1._id
-        ? selectedChat.groupAdmin._id
-        : selectedChat.users.length - 1 > 1
-        ? selectedChat.users[selectedChat.users.length - 2]._id
-        : user1._id;
+    // Andrei [0] - administrator
+
+    let newAdmin = selectedChat.users[0]._id;
+    if (selectedChat.users.length > 1) {
+      newAdmin =
+        selectedChat.groupAdmin._id !== userToRemove._id
+          ? selectedChat.groupAdmin._id
+          : currentIndex === 0
+          ? selectedChat.users[1]._id
+          : selectedChat.users[0]._id;
+    }
 
     try {
       setLoading(true);
@@ -64,11 +72,12 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         {
           chatId: selectedChat._id,
           groupAdmin: newAdmin,
-          userId: user1._id,
+          userId: userToRemove._id,
         },
         config
       );
-      user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
+
+      userToRemove._id === user._id ? setSelectedChat() : setSelectedChat(data);
       console.log("removed-----------", data);
       setFetchAgain(!fetchAgain);
       fetchMessages();
@@ -223,7 +232,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
           <ModalCloseButton />
           <ModalBody>
             <Box w="100%" d="flex" flexWrap="wrap" pb={3}>
-              {selectedChat.users.map((u) => (
+              {selectedChat.users.map((u, index) => (
                 <UserBadgeItem
                   key={u._id}
                   content={
@@ -231,7 +240,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                       ? u.name
                       : `${u.name} - administrator`
                   }
-                  handleFunction={() => handleRemove(u)}
+                  handleFunction={() => handleRemove(u, index)}
                 />
               ))}
             </Box>
