@@ -1,25 +1,26 @@
 import React from "react";
 import { VStack } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { Input } from "@chakra-ui/input";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Text } from "@chakra-ui/react";
 
 const Signup = () => {
-  const [show, setShow] = useState(false);
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [confirmpass, setConfirmpass] = useState();
-  const [password, setPassword] = useState();
   const [pic, setPic] = useState();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleClick = () => setShow(!show);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const postDetails = (pics) => {
     setLoading(true);
@@ -66,20 +67,9 @@ const Signup = () => {
     }
   };
 
-  const submitHandler = async () => {
+  const onSubmit = async (info) => {
     setLoading(true);
-    if (!name || !email || !password || !confirmpass) {
-      toast({
-        title: "Fill all the fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
-    }
-    if (password !== confirmpass) {
+    if (info.password !== info.confirmpass) {
       toast({
         title: "Passwords not matching",
         status: "warning",
@@ -87,6 +77,7 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
+      setLoading(false);
       return;
     }
     try {
@@ -97,7 +88,8 @@ const Signup = () => {
       };
       const { data } = await axios.post(
         "http://localhost:5000/api/user",
-        { name, email, password, pic },
+        info,
+        pic,
         config
       );
       toast({
@@ -107,6 +99,7 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
+      console.log(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/chats");
@@ -125,69 +118,96 @@ const Signup = () => {
 
   return (
     <VStack spacing="5px">
-      <FormControl id="first-name" isRequired>
-        <FormLabel>Name</FormLabel>
-        <Input
-          placeholder="Enter your name"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="email" isRequired>
-        <FormLabel>E-mail</FormLabel>
-        <Input
-          placeholder="Enter your e-mail"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
-        <InputGroup>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl id="first-name" isRequired>
+          <FormLabel>Name</FormLabel>
           <Input
-            type={show ? "text" : "password"}
+            placeholder="Enter your name"
+            {...register("name", {
+              required: true,
+              minLength: {
+                value: 3,
+                message: "Name too short",
+              },
+              maxLength: {
+                value: 15,
+                message: "Name too long",
+              },
+            })}
+          />
+        </FormControl>
+        {errors.name ? (
+          <Text color="red" role="alert">
+            {errors.name.message}
+          </Text>
+        ) : null}
+        <FormControl id="email" isRequired>
+          <FormLabel>E-mail</FormLabel>
+          <Input
+            placeholder="Enter your e-mail"
+            {...register("email", {
+              required: true,
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
+          />
+        </FormControl>
+        {errors.email ? (
+          <Text color="red" role="alert">
+            {errors.email.message}
+          </Text>
+        ) : null}
+        <FormControl id="password" isRequired>
+          <FormLabel>Password</FormLabel>
+          <Input
+            type="password"
             placeholder="Enter your password"
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password", {
+              required: true,
+              minLength: {
+                value: 8,
+                message: "Password too short",
+              },
+            })}
           />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="confirm_password" isRequired>
-        <FormLabel>Confirm password</FormLabel>
-        <InputGroup>
+        </FormControl>
+        {errors.password ? (
+          <Text color="red" role="alert">
+            {errors.password.message}
+          </Text>
+        ) : null}
+        <FormControl id="confirm_password" isRequired>
+          <FormLabel>Confirm password</FormLabel>
           <Input
-            type={show ? "text" : "password"}
+            type="password"
             placeholder="Confirm password"
-            onChange={(e) => setConfirmpass(e.target.value)}
+            {...register("confirmpass", {
+              required: true,
+            })}
           />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="pic">
-        <FormLabel>Upload pic</FormLabel>
-        <Input
-          type="file"
-          p={1.5}
-          accept="image/*"
-          onChange={(e) => postDetails(e.target.files[0])}
-        />
-      </FormControl>
-      <Button
-        variant="solid"
-        backgroundColor="#9370DB"
-        width="100%"
-        style={{ marginTop: 15 }}
-        onClick={submitHandler}
-        isLoading={loading}
-      >
-        Register
-      </Button>
+        </FormControl>
+        <FormControl id="pic">
+          <FormLabel>Upload pic</FormLabel>
+          <Input
+            type="file"
+            p={1.5}
+            accept="image/*"
+            onChange={(e) => postDetails(e.target.files[0])}
+          />
+        </FormControl>
+        <Button
+          variant="solid"
+          backgroundColor="#9370DB"
+          width="100%"
+          style={{ marginTop: 15 }}
+          type="submit"
+          isLoading={loading}
+        >
+          Register
+        </Button>
+      </form>
     </VStack>
   );
 };
