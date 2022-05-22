@@ -32,6 +32,7 @@ import { getSender } from "../../config/ChatLogics";
 import { Effect } from "react-notification-badge";
 import NotificationBadge from "react-notification-badge";
 import ToggleTheme from "../theme/ToggleTheme";
+import { useForm, useWatch } from "react-hook-form";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -39,6 +40,12 @@ const SideDrawer = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [loadingChat, setLoadingChat] = useState(false);
   const navigate = useNavigate();
+
+  const { register, control } = useForm();
+  useWatch({
+    control,
+    name: "input", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
+  });
 
   const {
     user,
@@ -211,8 +218,9 @@ const SideDrawer = () => {
               <Input
                 placeholder="Search by name or email"
                 mr={2}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                {...register("input", {
+                  onChange: (e) => setSearch(e.target.value),
+                })}
               />
               <Button onClick={handleSearch}>Go</Button>
             </Box>

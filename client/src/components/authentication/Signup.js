@@ -116,6 +116,17 @@ const Signup = () => {
     }
   };
 
+  const validatePassword = (value) => {
+    if (value.length < 6) {
+      return "Password should be at-least 6 characters.";
+    } else if (
+      !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*])/.test(value)
+    ) {
+      return "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol.";
+    }
+    return true;
+  };
+
   return (
     <VStack spacing="5px">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -166,10 +177,7 @@ const Signup = () => {
             placeholder="Enter your password"
             {...register("password", {
               required: true,
-              minLength: {
-                value: 8,
-                message: "Password too short",
-              },
+              validate: validatePassword,
             })}
           />
         </FormControl>
