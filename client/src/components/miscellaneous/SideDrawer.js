@@ -35,7 +35,6 @@ import ToggleTheme from "../theme/ToggleTheme";
 import { useForm, useWatch } from "react-hook-form";
 
 const SideDrawer = () => {
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -44,7 +43,7 @@ const SideDrawer = () => {
   const { register, control } = useForm();
   useWatch({
     control,
-    name: "input", // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
+    name: "input",
   });
 
   const {
@@ -66,18 +65,11 @@ const SideDrawer = () => {
 
   const toast = useToast();
 
-  const handleSearch = async () => {
+  const handleSearch = async (search) => {
     if (!search) {
-      toast({
-        title: "Please enter something in search",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top-left",
-      });
+      setSearchResult([]);
       return;
     }
-
     try {
       setLoading(true);
       const config = {
@@ -85,7 +77,6 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       const { data } = await axios.get(
         `http://localhost:5000/api/user?search=${search}`,
         config
@@ -157,8 +148,8 @@ const SideDrawer = () => {
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="3xl" fontWeight="800" fontFamily="Work sans">
-          Fullstack Chatapp
+        <Text fontSize={{ md: "3xl" }} fontWeight="800" fontFamily="Work sans">
+          Teletype
         </Text>
         <div>
           <Menu>
@@ -219,10 +210,10 @@ const SideDrawer = () => {
                 placeholder="Search by name or email"
                 mr={2}
                 {...register("input", {
-                  onChange: (e) => setSearch(e.target.value),
+                  onChange: (e) => handleSearch(e.target.value),
                 })}
               />
-              <Button onClick={handleSearch}>Go</Button>
+              {/* <Button onClick={handleSearch}>Go</Button> */}
             </Box>
             {loading ? (
               <ChatLoading />

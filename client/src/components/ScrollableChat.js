@@ -40,7 +40,7 @@ const ScrollableChat = ({ messages }) => {
             ) : (
               <></>
             )}
-            <span
+            <div
               style={{
                 backgroundColor: `${
                   m.sender._id === user._id ? "	#9370DB" : "#E6E6FA"
@@ -59,11 +59,14 @@ const ScrollableChat = ({ messages }) => {
               {m.content.startsWith(
                 "http://res.cloudinary.com/djeo89oo1/image/upload"
               ) ? (
-                <ImageComponent src={m.content} />
+                <>
+                  {``}
+                  <ImageComponent src={m.content} />
+                </>
               ) : (
                 m.content
               )}
-            </span>
+            </div>
             {/* <span> {m.createdAt} </span> */}
           </div>
         ))}

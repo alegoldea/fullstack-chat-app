@@ -14,7 +14,6 @@ const ImageComponent = ({ src }) => {
   return (
     <div style={grabbingCursor}>
       <Image
-        className="small"
         src={src}
         onClick={onOpen}
         alt="Image"
@@ -29,7 +28,6 @@ const ImageComponent = ({ src }) => {
             <ModalContent>
               <ModalCloseButton />
               <Image
-                className="image"
                 objectFit="contain"
                 maxW="800px"
                 maxH="1000px"

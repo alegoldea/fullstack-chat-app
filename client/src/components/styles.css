@@ -43,12 +43,42 @@
     right: 100px;
 }
 
-/* @media (prefers-color-scheme: dark) {
-    scrollable.dark-scheme { background-color: gray.700;}
+.buttons {
+    padding: 20px 30px;
+    border-radius: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-    scrollable.light-scheme {
-        background-color: gray.300;
+.box {
+    display: flex;
+    padding: 0.75rem;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: hidden;
+}
+
+.chat-header {
+    display: flex;
+    font-size: 30px;
+    padding-bottom: 0.75rem;
+    padding-inline-start: 0.5rem;
+    padding-inline-end: 0.5rem;
+    width: 100%;
+    font-family: "Work sans";
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media screen and (min-width: 600px) {
+    .chat-header {
+        font-size: 20px;
     }
-} */
+}
+
+@media screen and (min-width: 768px) {
+    .chat-header {
+        font-size: 30px;
+    }
+}

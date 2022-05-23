@@ -107,6 +107,7 @@ const MyChats = ({ fetchAgain }) => {
                   cursor="pointer"
                   px={3}
                   py={2}
+                  w="100%"
                   bg={selectedChat?._id === chat._id ? "#9370DB" : "gray.200"}
                   _dark={{
                     bg: selectedChat?._id === chat._id ? "#9370DB" : "gray.700",
@@ -144,15 +145,14 @@ const MyChats = ({ fetchAgain }) => {
                     d="flex"
                     flexDir="column"
                     pl="1"
-                    _dark={{ color: "white" }}
                     boxSizing="border-box"
-                    w="250px"
-                    h="50px"
+                    w="100%"
                     textOverflow="ellipsis"
                   >
                     <Text
                       fontSize={{ base: "17px", md: "12px", lg: "md" }}
                       fontWeight="700"
+                      _dark={{ color: "white" }}
                     >
                       {!chat.isGroupChat
                         ? getSender(user, chat.users)

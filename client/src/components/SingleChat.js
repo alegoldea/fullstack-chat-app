@@ -72,7 +72,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         config
       );
       setSelectedChat(data);
-      //setFetchAgain(!fetchAgain);
     } catch (error) {
       toast({
         title: "Error occured",
@@ -281,16 +280,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     <>
       {selectedChat ? (
         <>
-          <Text
-            fontSize={{ base: "28px", md: "30px" }}
-            pb={3}
-            px={2}
-            w="100%"
-            fontFamily="Work sans"
-            d="flex"
-            justifyContent={{ base: "space-between" }}
-            alignItems="center"
-          >
+          <Text className="chat-header">
             <IconButton
               d={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
@@ -312,18 +302,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </>
             )}
           </Text>
-          <Box
-            flexDir="column"
-            p={3}
-            bg="#E8E8E8"
-            _dark={{ bg: "gray.800" }}
-            w="100%"
-            h="100%"
-            borderRadius="lg"
-            d="flex"
-            justifyContent="flex-end"
-            overflowY="hidden"
-          >
+          <Box className="box" bg="#E8E8E8" _dark={{ bg: "gray.800" }}>
             {loading ? (
               <Spinner
                 size="x1"
@@ -357,9 +336,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   onChange={(e) => handleImage(e.target.files[0])}
                 />
                 <Button
+                  className="buttons"
                   colorScheme="purple"
-                  rounded="lg"
-                  width="20"
                   onClick={() => setPicker(!picker)}
                 >
                   <FontAwesomeIcon icon={faFaceSmile} />
@@ -370,17 +348,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   </div>
                 )}
                 <Button
+                  className="buttons"
                   colorScheme="purple"
-                  rounded="lg"
-                  width="20"
                   onClick={handleClick}
                 >
                   <FontAwesomeIcon icon={faFileImage} />
                 </Button>
                 <Button
                   colorScheme="purple"
-                  rounded="lg"
-                  width="20"
+                  className="buttons"
                   ref={submitMessage}
                   onClick={sendMessage}
                   type="submit"
