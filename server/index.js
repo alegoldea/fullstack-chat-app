@@ -11,6 +11,10 @@ const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
+const Redis = require("ioredis");
+
+const redisClient = new Redis();
+
 const app = express();
 connectDB();
 
@@ -75,6 +79,10 @@ io.on("connection", (socket) => {
 
       socket.in(user._id).emit("message received", newMessageReceived);
     });
+  });
+
+  socket.on("periodic ping", (message) => {
+    console.log(message);
   });
 
   socket.off("setup", () => {

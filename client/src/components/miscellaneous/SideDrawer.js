@@ -1,3 +1,4 @@
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Avatar,
   Box,
@@ -20,19 +21,17 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import React, { useContext, useState } from "react";
-import { ChatContext } from "../../context/ChatProvider";
-import ProfileModel from "./ProfileModel";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import ChatLoading from "../ChatLoading";
-import UserListItem from "../userAvatar/UserListItem";
-import { getSender } from "../../config/ChatLogics";
-import { Effect } from "react-notification-badge";
-import NotificationBadge from "react-notification-badge";
-import ToggleTheme from "../theme/ToggleTheme";
+import React, { useContext, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import NotificationBadge, { Effect } from "react-notification-badge";
+import { useNavigate } from "react-router-dom";
+import { getSender } from "../../config/ChatLogics";
+import { ChatContext } from "../../context/ChatProvider";
+import ChatLoading from "../ChatLoading";
+import ToggleTheme from "../theme/ToggleTheme";
+import UserListItem from "../userAvatar/UserListItem";
+import ProfileModel from "./ProfileModel";
 
 const SideDrawer = () => {
   const [loading, setLoading] = useState(false);

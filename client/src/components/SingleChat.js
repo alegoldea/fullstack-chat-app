@@ -212,6 +212,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.off("connected");
       socket.off("typing");
       socket.off("stop typing");
+      // socket.off("setup");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
