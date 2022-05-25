@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
 
   socket.on("join chat", (room) => {
     socket.join(room);
-    console.log("User joined room: " + room);
+    //console.log("User joined room: " + room);
   });
 
   socket.on("typing", (room) => socket.in(room).emit("typing"));
@@ -71,7 +71,6 @@ io.on("connection", (socket) => {
     var chat = newMessageReceived.chat;
     if (!chat.users) return console.log("chat.users not defined");
     chat.users.forEach((user) => {
-      console.log(user._id, newMessageReceived.sender._id);
       if (user._id === newMessageReceived.sender._id) return;
 
       socket.in(user._id).emit("message received", newMessageReceived);

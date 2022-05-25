@@ -34,7 +34,6 @@ const MyChats = ({ fetchAgain }) => {
         "http://localhost:5000/api/chat",
         config
       );
-      console.log(data);
       setChats(data);
     } catch (error) {
       toast({
@@ -100,7 +99,6 @@ const MyChats = ({ fetchAgain }) => {
         {chats ? (
           <Stack className="customized-scrollbar" overflowY="scroll">
             {chats.map((chat) => {
-              console.log("MY CHATS:", chat, selectedChat);
               return (
                 <Box
                   onClick={() => setSelectedChat(chat)}

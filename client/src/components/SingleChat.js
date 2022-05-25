@@ -10,23 +10,23 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { ChatContext } from "../context/ChatProvider";
-import { getSender, getSenderFull } from "../config/ChatLogics";
-import ProfileModel from "./miscellaneous/ProfileModel";
-import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
-import axios from "axios";
-import "./styles.css";
-import ScrollableChat from "./ScrollableChat";
-import io from "socket.io-client";
-import TypingAnimation from "./TypingAnimation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faFaceSmile,
   faFileImage,
   faPaperPlane,
-  faFaceSmile,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 import Picker from "emoji-picker-react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import io from "socket.io-client";
+import { getSender, getSenderFull } from "../config/ChatLogics";
+import { ChatContext } from "../context/ChatProvider";
+import ProfileModel from "./miscellaneous/ProfileModel";
+import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
+import ScrollableChat from "./ScrollableChat";
+import "./styles.css";
+import TypingAnimation from "./TypingAnimation";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -47,8 +47,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
-
-  console.log("IN SINGLE CHAT\n", selectedChat);
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -73,7 +71,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         },
         config
       );
-      console.log("FROM SINGLE CHAT POST IMAGE", data);
       setSelectedChat(data);
     } catch (error) {
       toast({
@@ -107,7 +104,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
-        console.log(data);
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
@@ -134,7 +130,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       });
       return;
     }
-    console.log(pics);
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
@@ -146,7 +141,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       })
         .then((res) => res.json())
         .then(async function (data) {
-          console.log(data.url.toString());
+          //console.log(data.url.toString());
           await addChatImage(data.url.toString());
           setNewMessage(data.url.toString());
           setUploaded(!uploaded);
@@ -191,8 +186,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         `http://localhost:5000/api/message/${selectedChat._id}`,
         config
       );
-
-      //console.log(messages);
       setMessages(data);
       setLoading(false);
       socket.emit("join chat", selectedChat._id);

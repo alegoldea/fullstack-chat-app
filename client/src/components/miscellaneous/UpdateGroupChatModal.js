@@ -78,7 +78,6 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       );
 
       userToRemove._id === user._id ? setSelectedChat() : setSelectedChat(data);
-      console.log("removed-----------", data);
       setFetchAgain(!fetchAgain);
       fetchMessages();
       setLoading(false);

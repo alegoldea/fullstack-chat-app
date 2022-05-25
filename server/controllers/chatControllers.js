@@ -177,7 +177,6 @@ const addImage = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Chat not found");
   } else {
-    console.log(added);
     res.json(added);
   }
 });
