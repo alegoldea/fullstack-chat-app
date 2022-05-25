@@ -59,53 +59,51 @@ const Login = () => {
   } = useForm();
 
   return (
-    <VStack spacing="5px">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl id="email_login" isRequired>
-          <FormLabel>E-mail</FormLabel>
-          <Input
-            placeholder="Enter your e-mail"
-            {...register("email", {
-              required: true,
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email address",
-              },
-            })}
-          />
-        </FormControl>
-        {errors.email ? (
-          <Text color="red" role="alert">
-            {errors.email.message}
-          </Text>
-        ) : null}
-        <FormControl id="password_login" isRequired>
-          <FormLabel>Password</FormLabel>
-          <Input
-            type="password"
-            placeholder="Enter your password"
-            {...register("password", {
-              required: true,
-            })}
-          />
-        </FormControl>
-        {errors.password ? (
-          <Text color="red" role="alert">
-            {errors.password.message}
-          </Text>
-        ) : null}
-        <Button
-          variant="solid"
-          backgroundColor="#9370DB"
-          width="100%"
-          style={{ marginTop: 15 }}
-          type="submit"
-          isLoading={loading}
-        >
-          Login
-        </Button>
-      </form>
-    </VStack>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl id="email_login" isRequired>
+        <FormLabel>E-mail</FormLabel>
+        <Input
+          placeholder="Enter your e-mail"
+          {...register("email", {
+            required: true,
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address",
+            },
+          })}
+        />
+      </FormControl>
+      {errors.email ? (
+        <Text color="red" role="alert">
+          {errors.email.message}
+        </Text>
+      ) : null}
+      <FormControl id="password_login" isRequired>
+        <FormLabel>Password</FormLabel>
+        <Input
+          type="password"
+          placeholder="Enter your password"
+          {...register("password", {
+            required: true,
+          })}
+        />
+      </FormControl>
+      {errors.password ? (
+        <Text color="red" role="alert">
+          {errors.password.message}
+        </Text>
+      ) : null}
+      <Button
+        variant="solid"
+        backgroundColor="#9370DB"
+        width="100%"
+        style={{ marginTop: 15 }}
+        type="submit"
+        isLoading={loading}
+      >
+        Login
+      </Button>
+    </form>
   );
 };
 

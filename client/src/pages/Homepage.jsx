@@ -33,7 +33,7 @@ const Homepage = () => {
           fontFamily="Work sans"
           _dark={{ color: "white" }}
         >
-          Fullstack Chat
+          Teletype
         </Text>
       </Box>
       <Box

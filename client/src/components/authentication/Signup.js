@@ -86,10 +86,12 @@ const Signup = () => {
           "Content-Type": "application/json",
         },
       };
+
+      // Get the body with the pic field
+      const bodyWithPic = { ...info, pic: pic };
       const { data } = await axios.post(
         "http://localhost:5000/api/user",
-        info,
-        pic,
+        bodyWithPic,
         config
       );
       toast({
@@ -120,7 +122,7 @@ const Signup = () => {
     if (value.length < 6) {
       return "Password should be at-least 6 characters.";
     } else if (
-      !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*])/.test(value)
+      !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#.$*])/.test(value)
     ) {
       return "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol.";
     }
@@ -128,95 +130,93 @@ const Signup = () => {
   };
 
   return (
-    <VStack spacing="5px">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl id="first-name" isRequired>
-          <FormLabel>Name</FormLabel>
-          <Input
-            placeholder="Enter your name"
-            {...register("name", {
-              required: true,
-              minLength: {
-                value: 3,
-                message: "Name too short",
-              },
-              maxLength: {
-                value: 15,
-                message: "Name too long",
-              },
-            })}
-          />
-        </FormControl>
-        {errors.name ? (
-          <Text color="red" role="alert">
-            {errors.name.message}
-          </Text>
-        ) : null}
-        <FormControl id="email" isRequired>
-          <FormLabel>E-mail</FormLabel>
-          <Input
-            placeholder="Enter your e-mail"
-            {...register("email", {
-              required: true,
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email address",
-              },
-            })}
-          />
-        </FormControl>
-        {errors.email ? (
-          <Text color="red" role="alert">
-            {errors.email.message}
-          </Text>
-        ) : null}
-        <FormControl id="password" isRequired>
-          <FormLabel>Password</FormLabel>
-          <Input
-            type="password"
-            placeholder="Enter your password"
-            {...register("password", {
-              required: true,
-              validate: validatePassword,
-            })}
-          />
-        </FormControl>
-        {errors.password ? (
-          <Text color="red" role="alert">
-            {errors.password.message}
-          </Text>
-        ) : null}
-        <FormControl id="confirm_password" isRequired>
-          <FormLabel>Confirm password</FormLabel>
-          <Input
-            type="password"
-            placeholder="Confirm password"
-            {...register("confirmpass", {
-              required: true,
-            })}
-          />
-        </FormControl>
-        <FormControl id="pic">
-          <FormLabel>Upload pic</FormLabel>
-          <Input
-            type="file"
-            p={1.5}
-            accept="image/*"
-            onChange={(e) => postDetails(e.target.files[0])}
-          />
-        </FormControl>
-        <Button
-          variant="solid"
-          backgroundColor="#9370DB"
-          width="100%"
-          style={{ marginTop: 15 }}
-          type="submit"
-          isLoading={loading}
-        >
-          Register
-        </Button>
-      </form>
-    </VStack>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl id="first-name" isRequired>
+        <FormLabel>Name</FormLabel>
+        <Input
+          placeholder="Enter your name"
+          {...register("name", {
+            required: true,
+            minLength: {
+              value: 3,
+              message: "Name too short",
+            },
+            maxLength: {
+              value: 15,
+              message: "Name too long",
+            },
+          })}
+        />
+      </FormControl>
+      {errors.name ? (
+        <Text color="red" role="alert">
+          {errors.name.message}
+        </Text>
+      ) : null}
+      <FormControl id="email" isRequired>
+        <FormLabel>E-mail</FormLabel>
+        <Input
+          placeholder="Enter your e-mail"
+          {...register("email", {
+            required: true,
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address",
+            },
+          })}
+        />
+      </FormControl>
+      {errors.email ? (
+        <Text color="red" role="alert">
+          {errors.email.message}
+        </Text>
+      ) : null}
+      <FormControl id="password" isRequired>
+        <FormLabel>Password</FormLabel>
+        <Input
+          type="password"
+          placeholder="Enter your password"
+          {...register("password", {
+            required: true,
+            validate: validatePassword,
+          })}
+        />
+      </FormControl>
+      {errors.password ? (
+        <Text color="red" role="alert">
+          {errors.password.message}
+        </Text>
+      ) : null}
+      <FormControl id="confirm_password" isRequired>
+        <FormLabel>Confirm password</FormLabel>
+        <Input
+          type="password"
+          placeholder="Confirm password"
+          {...register("confirmpass", {
+            required: true,
+          })}
+        />
+      </FormControl>
+      <FormControl id="pic">
+        <FormLabel>Upload pic</FormLabel>
+        <Input
+          type="file"
+          p={1.5}
+          accept="image/*"
+          onChange={(e) => postDetails(e.target.files[0])}
+        />
+      </FormControl>
+      <Button
+        variant="solid"
+        backgroundColor="#9370DB"
+        width="100%"
+        style={{ marginTop: 15 }}
+        type="submit"
+        isLoading={loading}
+      >
+        Register
+      </Button>
+    </form>
   );
 };
 
