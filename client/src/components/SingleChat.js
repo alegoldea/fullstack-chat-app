@@ -48,6 +48,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
 
+  console.log("IN SINGLE CHAT\n", selectedChat);
+
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
   };
@@ -71,6 +73,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         },
         config
       );
+      console.log("FROM SINGLE CHAT POST IMAGE", data);
       setSelectedChat(data);
     } catch (error) {
       toast({
@@ -233,6 +236,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
         if (
+          // TODO: check this for groups
+          // !notification.includes(newMessageReceived)
           !notification.some(
             (n) => n.sender.name === newMessageReceived.sender.name
           )

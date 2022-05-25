@@ -168,12 +168,16 @@ const addImage = asyncHandler(async (req, res) => {
     chatId,
     { $push: { images: imageURL } },
     { new: true }
-  );
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password")
+    .populate("latestMessage");
 
   if (!added) {
     res.status(404);
     throw new Error("Chat not found");
   } else {
+    console.log(added);
     res.json(added);
   }
 });
