@@ -8,6 +8,7 @@ import {
   Input,
   Spinner,
   Text,
+  useOutsideClick,
   useToast,
 } from "@chakra-ui/react";
 import {
@@ -47,6 +48,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
+
+  const ref = useRef();
+  useOutsideClick({
+    ref: ref,
+    handler: () => setPicker(false),
+  });
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -342,6 +349,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   className="buttons"
                   colorScheme="purple"
                   onClick={() => setPicker(!picker)}
+                  ref={ref}
                 >
                   <FontAwesomeIcon icon={faFaceSmile} />
                 </Button>
