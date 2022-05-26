@@ -1,7 +1,7 @@
 import React from "react";
 import { VStack } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { useState } from "react";
 import { useToast } from "@chakra-ui/react";
@@ -11,9 +11,12 @@ import { useForm } from "react-hook-form";
 import { Text } from "@chakra-ui/react";
 
 const Login = () => {
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+
+  const handleClick = () => setShow(!show);
 
   const onSubmit = async (info) => {
     setLoading(true);
@@ -80,13 +83,26 @@ const Login = () => {
       ) : null}
       <FormControl id="password_login" isRequired>
         <FormLabel>Password</FormLabel>
-        <Input
-          type="password"
-          placeholder="Enter your password"
-          {...register("password", {
-            required: true,
-          })}
-        />
+        <InputGroup>
+          <Input
+            type={show ? "text" : "password"}
+            placeholder="Enter your password"
+            {...register("password", {
+              required: true,
+            })}
+          />
+          <InputRightElement width="4.5rem">
+            <Button
+              h="1.75rem"
+              size="sm"
+              variant="solid"
+              colorScheme="purple"
+              onClick={handleClick}
+            >
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
       </FormControl>
       {errors.password ? (
         <Text color="red" role="alert">

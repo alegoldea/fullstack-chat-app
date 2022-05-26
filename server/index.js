@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("periodic ping", async (userId) => {
-    redisClient.set(`status:${userId}`, true, "ex", 10);
+    redisClient.set(`status:${userId}`, true, "ex", 6);
   });
 
   socket.off("setup", () => {
