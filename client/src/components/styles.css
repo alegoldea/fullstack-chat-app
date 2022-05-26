@@ -82,3 +82,18 @@
         font-size: 30px;
     }
 }
+
+.c-avatar {
+    position: relative;
+    display: inline-block;
+}
+
+.c-avatar__status {
+    width: 15px;
+    height: 15px;
+    border: 2px solid white;
+    position: absolute;
+    bottom: 2%;
+    right: 2%;
+    border-radius: 100%;
+}

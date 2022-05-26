@@ -2,6 +2,9 @@ const asyncHandler = require("express-async-handler");
 const { chats } = require("../data/data");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
+const Redis = require("ioredis");
+
+const redisClient = new Redis();
 
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
@@ -181,6 +184,15 @@ const addImage = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchActiveUsers = asyncHandler(async (req, res) => {
+  const result = await redisClient.keys("status*");
+  if (result.length > 0) {
+    res.json(result.map((s) => s.split("status:")[1]));
+  } else {
+    res.json(result);
+  }
+});
+
 module.exports = {
   accessChat,
   fetchChats,
@@ -189,4 +201,5 @@ module.exports = {
   addToGroup,
   removeFromGroup,
   addImage,
+  fetchActiveUsers,
 };

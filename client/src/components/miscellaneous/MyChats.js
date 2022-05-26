@@ -8,7 +8,7 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../context/ChatProvider";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
@@ -21,6 +21,40 @@ const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
   const { selectedChat, setSelectedChat, user, chats, setChats } =
     useContext(ChatContext);
+  const [activeUserIds, setActiveUserIds] = useState([]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      (async () => {
+        try {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          };
+
+          const { data } = await axios.get(
+            "http://localhost:5000/api/chat/active-chat",
+            config
+          );
+          setActiveUserIds(data);
+        } catch (error) {
+          toast({
+            title: "Error Occured",
+            description: "Failed to load chats",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-left",
+          });
+          return;
+        }
+      })();
+    }, 5000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const fetchChats = async () => {
     try {
@@ -118,15 +152,28 @@ const MyChats = ({ fetchAgain }) => {
                 >
                   <Box spacing="20px" mr="4" flexDir="column">
                     {!chat.isGroupChat ? (
-                      <Avatar
-                        rounded="full"
-                        h="10"
-                        w="10"
-                        size="sm"
-                        cursor="pointer"
-                        name={getSenderFull(user, chat.users).name}
-                        src={getSenderFull(user, chat.users).pic}
-                      />
+                      <div className="c-avatar">
+                        <Avatar
+                          rounded="full"
+                          h="10"
+                          w="10"
+                          size="sm"
+                          cursor="pointer"
+                          name={getSenderFull(user, chat.users).name}
+                          src={getSenderFull(user, chat.users).pic}
+                          objectFit="cover"
+                        />
+                        <span
+                          class="c-avatar__status"
+                          style={{
+                            backgroundColor: activeUserIds.includes(
+                              getSenderFull(user, chat.users)._id
+                            )
+                              ? "#99CC00"
+                              : "gray",
+                          }}
+                        />
+                      </div>
                     ) : (
                       <Avatar
                         rounded="full"
