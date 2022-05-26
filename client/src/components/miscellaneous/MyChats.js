@@ -175,15 +175,27 @@ const MyChats = ({ fetchAgain }) => {
                         />
                       </div>
                     ) : (
-                      <Avatar
-                        rounded="full"
-                        h="10"
-                        w="10"
-                        size="sm"
-                        cursor="pointer"
-                        name={chat.chatName}
-                        src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
-                      />
+                      <div className="c-avatar">
+                        <Avatar
+                          rounded="full"
+                          h="10"
+                          w="10"
+                          size="sm"
+                          cursor="pointer"
+                          name={chat.chatName}
+                          src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
+                        />
+                        <span
+                          class="c-avatar__status"
+                          style={{
+                            backgroundColor: activeUserIds.some((r) =>
+                              chat.users.map((c) => c._id).includes(r)
+                            )
+                              ? "#99CC00"
+                              : "gray",
+                          }}
+                        />
+                      </div>
                     )}
                   </Box>
                   <Box
