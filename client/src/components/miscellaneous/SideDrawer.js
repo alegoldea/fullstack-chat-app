@@ -139,7 +139,11 @@ const SideDrawer = () => {
         borderWidth="5px"
         borderRadius="lg"
       >
-        <Tooltip label="Search user to chat" hasArrow placement="bottom-end">
+        <Tooltip
+          label="Choose user to chat with"
+          hasArrow
+          placement="bottom-end"
+        >
           <Button variant="ghost" onClick={onOpen}>
             <i className="fa-solid fa-magnifying-glass"></i>
             <Text d={{ base: "none", md: "flex" }} px="4">
@@ -147,7 +151,12 @@ const SideDrawer = () => {
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize={{ md: "3xl" }} fontWeight="800" fontFamily="Work sans">
+        <Text
+          fontSize={{ md: "3xl" }}
+          fontWeight="600"
+          fontFamily="Work sans"
+          textShadow="2px 2px 8px purple"
+        >
           Teletype
         </Text>
         <div>
@@ -181,17 +190,26 @@ const SideDrawer = () => {
           </Menu>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              <Avatar
-                size="xs"
-                cursor="pointer"
-                name={user.name}
-                src={user.pic}
-              />
-              <Text fontSize="xx-small">{user.name}</Text>
+              <Box
+                d="flex"
+                flexDir="row"
+                maxW="-moz-max-content"
+                flexWrap="wrap"
+              >
+                <Avatar
+                  size="sm"
+                  cursor="pointer"
+                  name={user.name}
+                  src={user.pic}
+                />
+                <Text padding="8px" fontSize="sm">
+                  {user.name}
+                </Text>
+              </Box>
             </MenuButton>
             <MenuList>
               <ProfileModel user={user}>
-                <MenuItem>My Profile</MenuItem>
+                <MenuItem>See profile</MenuItem>
               </ProfileModel>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Log Out</MenuItem>

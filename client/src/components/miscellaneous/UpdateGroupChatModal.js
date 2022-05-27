@@ -1,5 +1,7 @@
 import { ViewIcon } from "@chakra-ui/icons";
 import {
+  Avatar,
+  AvatarGroup,
   Box,
   Button,
   FormControl,
@@ -252,18 +254,19 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
               alignItems="center"
               justifyContent="center"
             >
-              {selectedChat.users.slice(0, 7).map((u) => (
-                <Image
-                  key={u._id}
-                  src={u.pic}
-                  alt="default"
-                  w="50px"
-                  h="50px"
-                  rounded="full"
-                  ringColor="white"
-                  marginRight="-1.5rem"
-                />
-              ))}
+              <AvatarGroup max={4}>
+                {selectedChat.users.slice(0, 7).map((u) => (
+                  <Avatar
+                    key={u._id}
+                    src={u.pic}
+                    alt="default"
+                    w="50px"
+                    h="50px"
+                    rounded="full"
+                    marginRight="-1.5rem"
+                  />
+                ))}
+              </AvatarGroup>
             </Box>
             <FormControl d="flex">
               <Input
@@ -274,7 +277,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
               />
               <Button
                 variant="solid"
-                colorScheme="teal"
+                colorScheme="purple"
                 ml={1}
                 isLoading={renameLoading}
                 onClick={handleRename}
@@ -304,7 +307,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
           <ModalFooter>
             <Button colorScheme="red" onClick={() => handleRemove(user)}>
-              Leave group
+              Leave
             </Button>
           </ModalFooter>
         </ModalContent>

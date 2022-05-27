@@ -290,7 +290,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     <>
       {selectedChat ? (
         <>
-          <Text className="chat-header">
+          <Text className="chat-header" fontSize="lg">
             <IconButton
               d={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
@@ -333,7 +333,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   variant="filled"
                   bg="#E0E0E0"
                   _dark={{ bg: "gray.700", color: "white" }}
-                  placeholder="Enter a message"
+                  placeholder="Type a message..."
                   onChange={typingHandler}
                   value={newMessage}
                 />

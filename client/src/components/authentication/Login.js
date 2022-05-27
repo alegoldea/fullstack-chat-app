@@ -66,6 +66,8 @@ const Login = () => {
       <FormControl id="email_login" isRequired>
         <FormLabel>E-mail</FormLabel>
         <Input
+          border="none"
+          borderBottom="2px solid #805AD5"
           placeholder="Enter your e-mail"
           {...register("email", {
             required: true,
@@ -85,6 +87,8 @@ const Login = () => {
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input
+            border="none"
+            borderBottom="2px solid #805AD5"
             type={show ? "text" : "password"}
             placeholder="Enter your password"
             {...register("password", {

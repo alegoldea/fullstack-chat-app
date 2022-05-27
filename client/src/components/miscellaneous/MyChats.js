@@ -1,5 +1,6 @@
 import {
   Avatar,
+  AvatarBadge,
   Box,
   Button,
   Stack,
@@ -140,7 +141,7 @@ const MyChats = ({ fetchAgain }) => {
                   px={3}
                   py={2}
                   w="100%"
-                  bg={selectedChat?._id === chat._id ? "#9370DB" : "gray.200"}
+                  bg={selectedChat?._id === chat._id ? "#9370DB" : "white"}
                   _dark={{
                     bg: selectedChat?._id === chat._id ? "#9370DB" : "gray.700",
                   }}
@@ -152,50 +153,47 @@ const MyChats = ({ fetchAgain }) => {
                 >
                   <Box spacing="20px" mr="4" flexDir="column">
                     {!chat.isGroupChat ? (
-                      <div className="c-avatar">
-                        <Avatar
-                          rounded="full"
-                          h="10"
-                          w="10"
-                          size="sm"
-                          cursor="pointer"
-                          name={getSenderFull(user, chat.users).name}
-                          src={getSenderFull(user, chat.users).pic}
-                          objectFit="cover"
-                        />
-                        <span
-                          class="c-avatar__status"
-                          style={{
-                            backgroundColor: activeUserIds.includes(
+                      <Avatar
+                        rounded="full"
+                        h="10"
+                        w="10"
+                        size="sm"
+                        cursor="pointer"
+                        name={getSenderFull(user, chat.users).name}
+                        src={getSenderFull(user, chat.users).pic}
+                      >
+                        <AvatarBadge
+                          boxSize="1.25em"
+                          bg={
+                            activeUserIds.includes(
                               getSenderFull(user, chat.users)._id
                             )
-                              ? "#99CC00"
-                              : "gray",
-                          }}
+                              ? "green.500"
+                              : "gray"
+                          }
                         />
-                      </div>
+                      </Avatar>
                     ) : (
-                      <div className="c-avatar">
-                        <Avatar
-                          rounded="full"
-                          h="10"
-                          w="10"
-                          size="sm"
-                          cursor="pointer"
-                          name={chat.chatName}
-                          src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
-                        />
-                        <span
-                          class="c-avatar__status"
-                          style={{
-                            backgroundColor: activeUserIds.some((r) =>
+                      <Avatar
+                        rounded="full"
+                        h="10"
+                        w="10"
+                        size="sm"
+                        cursor="pointer"
+                        name={chat.chatName}
+                        src="https://cdn-icons-png.flaticon.com/512/166/166258.png"
+                      >
+                        <AvatarBadge
+                          boxSize="1.25em"
+                          bg={
+                            activeUserIds.some((r) =>
                               chat.users.map((c) => c._id).includes(r)
                             )
-                              ? "#99CC00"
-                              : "gray",
-                          }}
+                              ? "green.500"
+                              : "gray"
+                          }
                         />
-                      </div>
+                      </Avatar>
                     )}
                   </Box>
                   <Box
