@@ -59,7 +59,6 @@ io.on("connection", (socket) => {
 
   socket.on("setup", (userData) => {
     socket.join(userData._id);
-    console.log(userData._id);
     socket.emit("connected");
   });
 
@@ -71,6 +70,9 @@ io.on("connection", (socket) => {
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
+  socket.on("periodic ping", async (userId) => {
+    redisClient.set(`status:${userId}`, true, "ex", 6);
+  });
   socket.on("new message", (newMessageReceived) => {
     var chat = newMessageReceived.chat;
     if (!chat.users) return console.log("chat.users not defined");
@@ -81,12 +83,11 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("periodic ping", async (userId) => {
-    redisClient.set(`status:${userId}`, true, "ex", 6);
+  socket.on("disconnect", () => {
+    console.log("Disconnected"); // retrieve it from socket object
   });
 
   socket.off("setup", () => {
-    console.log("USER DISCONNECTED");
     socket.leave(userData._id);
   });
 });

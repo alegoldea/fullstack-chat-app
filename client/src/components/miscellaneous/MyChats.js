@@ -186,8 +186,10 @@ const MyChats = ({ fetchAgain }) => {
                         <AvatarBadge
                           boxSize="1.25em"
                           bg={
-                            activeUserIds.some((r) =>
-                              chat.users.map((c) => c._id).includes(r)
+                            activeUserIds.some(
+                              (r) =>
+                                chat.users.map((c) => c._id).includes(r) &&
+                                r !== user._id
                             )
                               ? "green.500"
                               : "gray"

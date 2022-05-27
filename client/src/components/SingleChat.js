@@ -113,6 +113,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        setFetchAgain(!fetchAgain);
       } catch (error) {
         toast({
           title: "Error occured",
@@ -244,12 +245,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           )
         ) {
           setNotification([newMessageReceived, ...notification]);
-          setFetchAgain(!fetchAgain);
         }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
+      setFetchAgain(!fetchAgain);
     });
+
     return () => {
       socket.off("message received");
     };
@@ -259,6 +261,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     newMessage
       ? setNewMessage(newMessage + chosenEmoji?.emoji)
       : setNewMessage(chosenEmoji?.emoji);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenEmoji]);
 
   useEffect(() => {
