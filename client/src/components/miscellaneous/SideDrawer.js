@@ -27,6 +27,7 @@ import { useForm, useWatch } from "react-hook-form";
 import NotificationBadge, { Effect } from "react-notification-badge";
 import { useNavigate } from "react-router-dom";
 import { getSender } from "../../config/ChatLogics";
+import socket from "../../config/socketClient";
 import { ChatContext } from "../../context/ChatProvider";
 import ChatLoading from "../ChatLoading";
 import ToggleTheme from "../theme/ToggleTheme";
@@ -209,7 +210,7 @@ const SideDrawer = () => {
             </MenuButton>
             <MenuList>
               <ProfileModel user={user}>
-                <MenuItem>See profile</MenuItem>
+                <MenuItem>Profile</MenuItem>
               </ProfileModel>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Log Out</MenuItem>

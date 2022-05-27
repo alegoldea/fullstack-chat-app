@@ -18,6 +18,8 @@ import { getSender, getSenderFull } from "../../config/ChatLogics";
 import GroupChatModal from "./GroupChatModal";
 import { getDate } from "../../config/Functions";
 
+const FETCH_ACTIVE_STATUS_SECONDS = 2;
+
 const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
   const { selectedChat, setSelectedChat, user, chats, setChats } =
@@ -51,7 +53,7 @@ const MyChats = ({ fetchAgain }) => {
           return;
         }
       })();
-    }, 5000);
+    }, FETCH_ACTIVE_STATUS_SECONDS * 1000);
     return () => {
       clearInterval(intervalId);
     };

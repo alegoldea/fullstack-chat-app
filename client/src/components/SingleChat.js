@@ -20,17 +20,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Picker from "emoji-picker-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
 import { getSender, getSenderFull } from "../config/ChatLogics";
+import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
 import ProfileModel from "./miscellaneous/ProfileModel";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import TypingAnimation from "./TypingAnimation";
-
-const ENDPOINT = "http://localhost:5000";
-var socket, selectedChatCompare;
+let selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -210,20 +208,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
+      socket.off("setup");
       socket.off("connected");
       socket.off("typing");
       socket.off("stop typing");
-      // socket.off("setup");
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchMessages();

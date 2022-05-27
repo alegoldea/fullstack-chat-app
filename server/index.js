@@ -58,21 +58,20 @@ io.on("connection", (socket) => {
   console.log("connected to socket.io");
 
   socket.on("setup", (userData) => {
+    socket.userId = userData._id;
     socket.join(userData._id);
+    redisClient.set(`status:${userData._id}`, true);
     socket.emit("connected");
   });
 
   socket.on("join chat", (room) => {
     socket.join(room);
-    //console.log("User joined room: " + room);
+    console.log("User joined room: " + room);
   });
 
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-  socket.on("periodic ping", async (userId) => {
-    redisClient.set(`status:${userId}`, true, "ex", 6);
-  });
   socket.on("new message", (newMessageReceived) => {
     var chat = newMessageReceived.chat;
     if (!chat.users) return console.log("chat.users not defined");
@@ -84,7 +83,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("Disconnected"); // retrieve it from socket object
+    console.log("Disconnected " + socket.userId); // retrieve it from socket object
+    redisClient.del(`status:${socket.userId}`);
   });
 
   socket.off("setup", () => {
