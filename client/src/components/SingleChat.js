@@ -53,11 +53,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
   const [chatKeyString, setChatKeyString] = useState(null);
-  const [keyForEncryptionAndDecryption, setKeyForEncryptionAndDecryption] =
-    useState(null);
 
-  const { user, selectedChat, setSelectedChat, notification, setNotification } =
-    useContext(ChatContext);
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notification,
+    setNotification,
+    keyForEncryptionAndDecryption,
+    setKeyForEncryptionAndDecryption,
+  } = useContext(ChatContext);
 
   // When someone starts a chat with you for the first time
   useEffect(() => {

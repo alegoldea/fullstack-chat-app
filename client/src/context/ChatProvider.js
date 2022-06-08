@@ -10,6 +10,8 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [notification, setNotification] = useState([]);
   const navigate = useNavigate();
+  const [keyForEncryptionAndDecryption, setKeyForEncryptionAndDecryption] =
+    useState(null);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -39,6 +41,8 @@ const ChatProvider = ({ children }) => {
         setChats,
         notification,
         setNotification,
+        keyForEncryptionAndDecryption,
+        setKeyForEncryptionAndDecryption,
       }}
     >
       {children}

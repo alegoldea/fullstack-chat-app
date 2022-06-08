@@ -22,8 +22,14 @@ const FETCH_ACTIVE_STATUS_SECONDS = 2;
 
 const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
-  const { selectedChat, setSelectedChat, user, chats, setChats } =
-    useContext(ChatContext);
+  const {
+    selectedChat,
+    setSelectedChat,
+    user,
+    chats,
+    setChats,
+    keyForEncryptionAndDecryption,
+  } = useContext(ChatContext);
   const [activeUserIds, setActiveUserIds] = useState([]);
 
   useEffect(() => {
@@ -89,6 +95,45 @@ const MyChats = ({ fetchAgain }) => {
     fetchChats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchAgain]);
+
+  const getTextToDisplayUnderAvatar = (chat) => {
+    if (!chat.latestMessage) return <></>;
+
+    if (chat.latestMessage.sender._id === user._id) {
+      if (!keyForEncryptionAndDecryption) {
+        return `You sent a message`;
+      }
+      try {
+        const decryptedMsg = keyForEncryptionAndDecryption.decrypt(
+          chat?.latestMessage?.content
+        );
+        return `You: ${
+          decryptedMsg.includes(
+            "http://res.cloudinary.com/djeo89oo1/image/upload"
+          )
+            ? "sent an image"
+            : decryptedMsg
+        }`;
+      } catch (error) {
+        return `You sent a message`;
+      }
+    } else {
+      try {
+        const decryptedMsg = keyForEncryptionAndDecryption.decrypt(
+          chat?.latestMessage?.content
+        );
+        return `${chat.latestMessage.sender.name} : ${
+          decryptedMsg.includes(
+            "http://res.cloudinary.com/djeo89oo1/image/upload"
+          )
+            ? "sent an image"
+            : decryptedMsg
+        }`;
+      } catch (error) {
+        return `You sent a message`;
+      }
+    }
+  };
 
   return (
     <Box
@@ -223,25 +268,7 @@ const MyChats = ({ fetchAgain }) => {
                         fontSize={{ md: "xs", lg: "sm" }}
                         _dark={{ color: "gray.300" }}
                       >
-                        {!chat.latestMessage ? (
-                          <></>
-                        ) : chat.latestMessage.sender._id === user._id ? (
-                          `You: ${
-                            chat?.latestMessage?.content?.includes(
-                              "http://res.cloudinary.com/djeo89oo1/image/upload"
-                            )
-                              ? "sent an image"
-                              : chat.latestMessage.content
-                          }`
-                        ) : (
-                          `${chat.latestMessage.sender.name} : ${
-                            chat?.latestMessage?.content?.includes(
-                              "http://res.cloudinary.com/djeo89oo1/image/upload"
-                            )
-                              ? "sent an image"
-                              : chat.latestMessage.content
-                          }`
-                        )}
+                        {getTextToDisplayUnderAvatar(chat)}
                       </Text>
                       <Text
                         isTruncated
