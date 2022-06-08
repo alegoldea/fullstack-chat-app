@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { decodeKeyPair } from "../util/asymmetric";
 
 export const ChatContext = createContext();
 
@@ -12,8 +13,15 @@ const ChatProvider = ({ children }) => {
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    //console.log(userInfo);
-    setUser(userInfo);
+
+    // console.log(userInfo);
+
+    const keyPair = decodeKeyPair({
+      encodedPrivateKey: userInfo.encodedPrivateKey,
+      encodedPublicKey: userInfo.encodedPublicKey,
+    });
+
+    setUser({ ...userInfo, keyPair });
 
     if (!userInfo) {
       navigate("/");
