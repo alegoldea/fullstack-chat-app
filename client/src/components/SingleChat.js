@@ -25,6 +25,7 @@ import { ChatContext } from "../context/ChatProvider";
 import {
   decodePublicKey,
   decode_message_in_transit,
+  decrypt,
   encode_message_in_transit,
   encrypt,
 } from "../util/asymmetric";
@@ -37,6 +38,7 @@ let selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
+  const firstMessage = messages[0];
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
   const [socketConnected, setSocketConnected] = useState(false);
@@ -53,6 +55,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
+
+  useEffect(() => {
+    if (!firstMessage) return;
+    if (firstMessage.sender._id === user._id) return;
+    if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) return;
+
+    const decodedMessageInTransit = decode_message_in_transit(
+      JSON.parse(firstMessage.content)
+    );
+
+    const theirEncodedPublicKey = getSenderFull(
+      user,
+      selectedChat?.users
+    )?.encodedPublicKey;
+    if (!theirEncodedPublicKey) return;
+
+    const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+
+    const decryptedChatKey = decrypt(
+      decodedMessageInTransit,
+      user.keyPair.secretKey,
+      theirPublicKey
+    );
+    localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
+    setChatKey(decryptedChatKey);
+  }, [firstMessage, user]);
 
   // If there isn't any message, send the chatKey
   useEffect(() => {
@@ -77,11 +105,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const encodedMessageInTransit =
       encode_message_in_transit(message_in_transit);
 
-    setNewMessage(JSON.stringify(encodedMessageInTransit));
-    sendMessage().catch(console.log);
+    sendAutomaticMessage(JSON.stringify(encodedMessageInTransit)).catch(
+      console.log
+    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChat, user, chatKey]);
+  }, [selectedChat]);
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -111,6 +140,36 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       toast({
         title: "Error occured",
         description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
+
+  const sendAutomaticMessage = async (message) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        `http://localhost:5000/api/message`,
+        {
+          content: message,
+          chatId: selectedChat._id,
+        },
+        config
+      );
+      setMessages([...messages, data]);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      toast({
+        title: "Error occured",
+        description: "Failed to send automatic message",
         status: "error",
         duration: 5000,
         isClosable: true,
