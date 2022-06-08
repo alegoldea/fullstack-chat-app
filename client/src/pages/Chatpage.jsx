@@ -1,10 +1,9 @@
 import { Box } from "@chakra-ui/react";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import ChatBox from "../components/miscellaneous/ChatBox";
 import MyChats from "../components/miscellaneous/MyChats";
 import SideDrawer from "../components/miscellaneous/SideDrawer";
 import { ChatContext } from "../context/ChatProvider";
-import socket from "../config/socketClient";
 
 const Chatpage = () => {
   const { user } = useContext(ChatContext);

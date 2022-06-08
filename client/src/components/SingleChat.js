@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Picker from "emoji-picker-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import SimpleCrypto from "simple-crypto-js";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
@@ -51,11 +52,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [picker, setPicker] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
-  const [chatKey, setChatKey] = useState(null);
+  const [chatKeyString, setChatKeyString] = useState(null);
+  const [keyForEncryptionAndDecryption, setKeyForEncryptionAndDecryption] =
+    useState(null);
 
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
 
+  // When someone starts a chat with you for the first time
   useEffect(() => {
     if (!firstMessage) return;
     if (firstMessage.sender._id === user._id) return;
@@ -65,49 +69,101 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       JSON.parse(firstMessage.content)
     );
 
+    console.log(
+      "Received chat for first time: Getting decoded message",
+      decodedMessageInTransit
+    );
+
     const theirEncodedPublicKey = getSenderFull(
       user,
       selectedChat?.users
     )?.encodedPublicKey;
     if (!theirEncodedPublicKey) return;
 
+    console.log(
+      "Received chat for first time: Getting their encoded public key",
+      theirEncodedPublicKey
+    );
+
     const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+
+    console.log(
+      "Received chat for first time: Decoding their public key",
+      theirPublicKey
+    );
 
     const decryptedChatKey = decrypt(
       decodedMessageInTransit,
       user.keyPair.secretKey,
       theirPublicKey
     );
+
+    console.log(
+      "Received chat for first time: Decrypting the chat key",
+      decryptedChatKey
+    );
+
     localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
-    setChatKey(decryptedChatKey);
+
+    setChatKeyString(decryptedChatKey);
+
+    const cryptoKey = new SimpleCrypto(decryptedChatKey);
+
+    setKeyForEncryptionAndDecryption(cryptoKey);
   }, [firstMessage, user]);
 
-  // If there isn't any message, send the chatKey
+  // When you start a chat with someone for the first time
   useEffect(() => {
-    if (!(selectedChat && selectedChat.users && user)) return;
-    if (selectedChat.latestMessage) return;
-    if (!chatKey) return;
+    (async () => {
+      if (!(selectedChat && selectedChat.users && user)) return;
+      if (selectedChat.latestMessage) return;
+      if (!chatKeyString) return;
 
-    const theirEncodedPublicKey = getSenderFull(
-      user,
-      selectedChat?.users
-    )?.encodedPublicKey;
-    if (!theirEncodedPublicKey) return;
+      const theirEncodedPublicKey = getSenderFull(
+        user,
+        selectedChat?.users
+      )?.encodedPublicKey;
+      if (!theirEncodedPublicKey) return;
 
-    const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+      console.log(
+        "Starting chat: Getting their encoded public key",
+        theirEncodedPublicKey
+      );
 
-    const message_in_transit = encrypt(
-      chatKey,
-      user.keyPair.secretKey,
-      theirPublicKey
-    );
+      try {
+        const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
 
-    const encodedMessageInTransit =
-      encode_message_in_transit(message_in_transit);
+        console.log("Starting chat: Getting their public key", theirPublicKey);
 
-    sendAutomaticMessage(JSON.stringify(encodedMessageInTransit)).catch(
-      console.log
-    );
+        const message_in_transit = encrypt(
+          chatKeyString,
+          user.keyPair.secretKey,
+          theirPublicKey
+        );
+
+        console.log(
+          "Starting chat: Encrypted secret with the message:",
+          chatKeyString,
+          message_in_transit
+        );
+
+        localStorage.setItem(`chatkey_${selectedChat?._id}`, chatKeyString);
+
+        const encodedMessageInTransit =
+          encode_message_in_transit(message_in_transit);
+
+        console.log(
+          "Starting chat: Encoded message in transit:",
+          encodedMessageInTransit
+        );
+
+        await sendAutomaticMessage(JSON.stringify(encodedMessageInTransit));
+        console.log("Sent message in transit! Done!");
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    })();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
@@ -167,6 +223,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setMessages([...messages, data]);
       setFetchAgain(!fetchAgain);
     } catch (error) {
+      console.log("AUTOMATIC MSG:", error);
       toast({
         title: "Error occured",
         description: "Failed to send automatic message",
@@ -179,7 +236,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (e) => {
-    if (newMessage) {
+    if (newMessage && chatKeyString) {
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -190,14 +247,25 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
 
         setNewMessage("");
+
+        const messageToBeSent =
+          keyForEncryptionAndDecryption.encrypt(newMessage);
+        console.log("Original message:", newMessage);
+        console.log("Encrypted message:", messageToBeSent);
+        console.log(
+          "Decrypted message:",
+          keyForEncryptionAndDecryption.decrypt(messageToBeSent)
+        );
+
         const { data } = await axios.post(
           `http://localhost:5000/api/message`,
           {
-            content: newMessage,
+            content: messageToBeSent,
             chatId: selectedChat._id,
           },
           config
         );
+
         socket.emit("new message", data);
         setMessages([...messages, data]);
         setFetchAgain(!fetchAgain);
@@ -310,11 +378,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
   }, [user]);
 
+  // Loads the key from localStorage when selecting a chat
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    setChatKey(localStorage.getItem(`chatkey_${selectedChat?._id}`));
+
+    const decryptedChatKey = localStorage.getItem(
+      `chatkey_${selectedChat?._id}`
+    );
+    if (!decryptedChatKey) return;
+
+    console.log(
+      "Getting decrypted chat key from localStorage",
+      decryptedChatKey
+    );
+
+    setChatKeyString(decryptedChatKey);
+    const cryptoKey = new SimpleCrypto(decryptedChatKey);
+
+    setKeyForEncryptionAndDecryption(cryptoKey);
   }, [selectedChat]);
 
   useEffect(() => {
@@ -364,10 +448,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
+    let timerLength = 3000;
     setTimeout(() => {
-      var timeNow = new Date().getTime();
-      var timeDiff = timeNow - lastTypingTime;
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
         socket.emit("stop typing", selectedChat._id);
         setTyping(false);
@@ -412,14 +496,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat messages={messages} />
+                <ScrollableChat
+                  scrollableMessages={messages}
+                  chatKey={keyForEncryptionAndDecryption}
+                />
               </div>
             )}
             <FormControl onKeyDown={handleKeyPress} isRequired mt={3}>
               {isTyping ? <TypingAnimation /> : <></>}
               <HStack d="flex" flexDir="row" justifyContent="space-between">
                 <Input
-                  variant="filled"
+                  letiant="filled"
                   bg="#E0E0E0"
                   _dark={{ bg: "gray.700", color: "white" }}
                   placeholder="Type a message..."

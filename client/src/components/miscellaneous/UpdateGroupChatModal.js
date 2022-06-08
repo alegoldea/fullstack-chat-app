@@ -6,7 +6,6 @@ import {
   Button,
   FormControl,
   IconButton,
-  Image,
   Input,
   Modal,
   ModalBody,
