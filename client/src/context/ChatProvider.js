@@ -14,6 +14,10 @@ const ChatProvider = ({ children }) => {
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
+    if (userInfo === null) {
+      navigate("/");
+      return;
+    }
     // console.log(userInfo);
 
     const keyPair = decodeKeyPair({
@@ -22,10 +26,6 @@ const ChatProvider = ({ children }) => {
     });
 
     setUser({ ...userInfo, keyPair });
-
-    if (!userInfo) {
-      navigate("/");
-    }
   }, [navigate]);
 
   return (

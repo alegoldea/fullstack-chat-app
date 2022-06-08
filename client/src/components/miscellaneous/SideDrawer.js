@@ -27,12 +27,12 @@ import { useForm, useWatch } from "react-hook-form";
 import NotificationBadge, { Effect } from "react-notification-badge";
 import { useNavigate } from "react-router-dom";
 import { getSender } from "../../config/ChatLogics";
-import socket from "../../config/socketClient";
 import { ChatContext } from "../../context/ChatProvider";
 import ChatLoading from "../ChatLoading";
 import ToggleTheme from "../theme/ToggleTheme";
 import UserListItem from "../userAvatar/UserListItem";
 import ProfileModel from "./ProfileModel";
+import { generateChatKey } from "../../util/symmetric";
 
 const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
@@ -111,6 +111,11 @@ const SideDrawer = () => {
         { userId },
         config
       );
+
+      const chatKey = generateChatKey();
+      if (localStorage.getItem(`chatkey_${data._id}`) === null) {
+        localStorage.setItem(`chatkey_${data._id}`, chatKey);
+      }
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);

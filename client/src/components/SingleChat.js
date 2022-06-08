@@ -22,6 +22,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
+import {
+  decodePublicKey,
+  decode_message_in_transit,
+  encode_message_in_transit,
+  encrypt,
+} from "../util/asymmetric";
 import ProfileModel from "./miscellaneous/ProfileModel";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import ScrollableChat from "./ScrollableChat";
@@ -43,8 +49,39 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [picker, setPicker] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
+  const [chatKey, setChatKey] = useState(null);
+
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
     useContext(ChatContext);
+
+  // If there isn't any message, send the chatKey
+  useEffect(() => {
+    if (!(selectedChat && selectedChat.users && user)) return;
+    if (selectedChat.latestMessage) return;
+    if (!chatKey) return;
+
+    const theirEncodedPublicKey = getSenderFull(
+      user,
+      selectedChat?.users
+    )?.encodedPublicKey;
+    if (!theirEncodedPublicKey) return;
+
+    const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+
+    const message_in_transit = encrypt(
+      chatKey,
+      user.keyPair.secretKey,
+      theirPublicKey
+    );
+
+    const encodedMessageInTransit =
+      encode_message_in_transit(message_in_transit);
+
+    setNewMessage(JSON.stringify(encodedMessageInTransit));
+    sendMessage().catch(console.log);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat, user, chatKey]);
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -218,6 +255,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     fetchMessages();
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    setChatKey(localStorage.getItem(`chatkey_${selectedChat?._id}`));
   }, [selectedChat]);
 
   useEffect(() => {

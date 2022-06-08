@@ -22,6 +22,19 @@ function encrypt(message, myPrivateKey, theirPublicKey) {
   return message_in_transit;
 }
 
+function encode_message_in_transit(message) {
+  return {
+    cipher_text: naclUtil.encodeBase64(message.cipher_text),
+    one_time_code: naclUtil.encodeBase64(message.one_time_code),
+  };
+}
+function decode_message_in_transit(message) {
+  return {
+    cipher_text: naclUtil.decodeBase64(message.cipher_text),
+    one_time_code: naclUtil.decodeBase64(message.one_time_code),
+  };
+}
+
 function decrypt(message_with_code, myPrivateKey, theirPublicKey) {
   //Get the decoded message
   let decoded_message = nacl.box.open(
@@ -53,4 +66,17 @@ function decodeKeyPair({ encodedPrivateKey, encodedPublicKey }) {
   };
 }
 
-export { encodeKeyPair, decodeKeyPair, generateKeyPair, decrypt, encrypt };
+function decodePublicKey(encodedPublicKey) {
+  return naclUtil.decodeBase64(encodedPublicKey);
+}
+
+export {
+  encodeKeyPair,
+  decodeKeyPair,
+  generateKeyPair,
+  decrypt,
+  encrypt,
+  decodePublicKey,
+  encode_message_in_transit,
+  decode_message_in_transit,
+};

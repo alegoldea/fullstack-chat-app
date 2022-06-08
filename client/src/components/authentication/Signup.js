@@ -1,14 +1,11 @@
-import React from "react";
-import { VStack } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { useState } from "react";
-import { useToast } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/input";
+import { Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Text } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { encodeKeyPair, generateKeyPair } from "../../util/asymmetric";
 
 const Signup = () => {
