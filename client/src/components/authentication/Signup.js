@@ -9,12 +9,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Text } from "@chakra-ui/react";
+import { encodeKeyPair, generateKeyPair } from "../../util/asymmetric";
 
 const Signup = () => {
   const [pic, setPic] = useState();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+
+  const [encodedKeyPair] = useState(() => encodeKeyPair(generateKeyPair()));
 
   const {
     register,
@@ -86,11 +89,14 @@ const Signup = () => {
         },
       };
 
-      // Get the body with the pic field
-      const bodyWithPic = { ...info, pic: pic };
+      const bodyWithPicAndPublicKey = {
+        ...info,
+        pic: pic,
+        encodedPublicKey: encodedKeyPair.encodedPublicKey,
+      };
       const { data } = await axios.post(
         "http://localhost:5000/api/user",
-        bodyWithPic,
+        bodyWithPicAndPublicKey,
         config
       );
       toast({
@@ -100,7 +106,13 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          ...data,
+          encodedPrivateKey: encodedKeyPair.encodedPrivateKey,
+        })
+      );
       setLoading(false);
       navigate("/chats");
     } catch (error) {
