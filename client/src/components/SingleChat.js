@@ -66,6 +66,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   // When someone starts a chat with you for the first time
   useEffect(() => {
+    if (selectedChat?.isGroupChat) return;
     if (!firstMessage) return;
     if (firstMessage.sender._id === user._id) return;
     if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) return;
@@ -119,6 +120,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   // When you start a chat with someone for the first time
   useEffect(() => {
+    if (selectedChat?.isGroupChat) return;
+
     (async () => {
       if (!(selectedChat && selectedChat.users && user)) return;
       if (selectedChat.latestMessage) return;
@@ -253,14 +256,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
         setNewMessage("");
 
-        const messageToBeSent =
-          keyForEncryptionAndDecryption.encrypt(newMessage);
-        console.log("Original message:", newMessage);
-        console.log("Encrypted message:", messageToBeSent);
-        console.log(
-          "Decrypted message:",
-          keyForEncryptionAndDecryption.decrypt(messageToBeSent)
-        );
+        let messageToBeSent = newMessage;
+
+        if (!selectedChat.isGroupChat) {
+          messageToBeSent = keyForEncryptionAndDecryption.encrypt(newMessage);
+          console.log("Original message:", newMessage);
+          console.log("Encrypted message:", messageToBeSent);
+          console.log(
+            "Decrypted message:",
+            keyForEncryptionAndDecryption.decrypt(messageToBeSent)
+          );
+        }
 
         const { data } = await axios.post(
           `http://localhost:5000/api/message`,
@@ -388,6 +394,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     fetchMessages();
     selectedChatCompare = selectedChat;
 
+    if (selectedChat?.isGroupChat) return;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
     const decryptedChatKey = localStorage.getItem(
@@ -504,6 +512,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat
                   scrollableMessages={messages}
                   chatKey={keyForEncryptionAndDecryption}
+                  isGroupChat={selectedChat?.isGroupChat || false}
                 />
               </div>
             )}

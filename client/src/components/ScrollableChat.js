@@ -12,24 +12,32 @@ import { ChatContext } from "../context/ChatProvider";
 import ImageComponent from "./ImageComponent";
 import "./styles.css";
 
-const ScrollableChat = ({ scrollableMessages, chatKey }) => {
+const ScrollableChat = ({
+  scrollableMessages,
+  chatKey,
+  isGroupChat = false,
+}) => {
   const { user } = useContext(ChatContext);
-
-  console.log("Scrollable chat key:", chatKey);
 
   if (!scrollableMessages) {
     return <ScrollableFeed></ScrollableFeed>;
   }
 
-  const messages = [...scrollableMessages].splice(1).map((m) => {
-    try {
-      const decryptedContent = chatKey.decrypt(m.content);
-      return { ...m, content: decryptedContent };
-    } catch (error) {
-      console.log("Error decrypt:", m.content);
-      return { ...m, content: "Couldn't decrypt message. Invalid format." };
-    }
-  });
+  let messages = scrollableMessages;
+
+  if (!isGroupChat) {
+    console.log("Scrollable chat key:", chatKey);
+
+    messages = [...scrollableMessages].splice(1).map((m) => {
+      try {
+        const decryptedContent = chatKey.decrypt(m.content);
+        return { ...m, content: decryptedContent };
+      } catch (error) {
+        console.log("Error decrypt:", m.content);
+        return { ...m, content: "Couldn't decrypt message. Invalid format." };
+      }
+    });
+  }
 
   return (
     <ScrollableFeed>
