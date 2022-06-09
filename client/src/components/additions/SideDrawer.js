@@ -26,7 +26,7 @@ import React, { useContext, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import NotificationBadge, { Effect } from "react-notification-badge";
 import { useNavigate } from "react-router-dom";
-import { getSender } from "../../config/chatLogic.js";
+import { getOtherName } from "../../config/chatLogic.js";
 import { ChatContext } from "../../context/ChatProvider";
 import ChatLoading from "./ChatLoading";
 import ToggleTheme from "../theme/ToggleTheme";
@@ -95,7 +95,7 @@ const SideDrawer = () => {
     }
   };
 
-  const accessChat = async (userId) => {
+  const accessOrCreateChat = async (userId) => {
     try {
       setLoadingChat(true);
       const config = {
@@ -183,7 +183,10 @@ const SideDrawer = () => {
                 >
                   {notif.chat.isGroupChat
                     ? `New messages in ${notif.chat.chatName}`
-                    : `New messages from ${getSender(user, notif.chat.users)}`}
+                    : `New messages from ${getOtherName(
+                        user,
+                        notif.chat.users
+                      )}`}
                 </MenuItem>
               ))}
             </MenuList>
@@ -239,7 +242,7 @@ const SideDrawer = () => {
                 <UserListItem
                   key={user._id}
                   user={user}
-                  handleFunction={() => accessChat(user._id)}
+                  handleFunction={() => accessOrCreateChat(user._id)}
                 />
               ))
             )}

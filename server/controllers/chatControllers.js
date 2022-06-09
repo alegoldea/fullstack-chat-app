@@ -5,15 +5,15 @@ const Redis = require("ioredis");
 
 const redisClient = new Redis();
 
-const accessChat = asyncHandler(async (req, res) => {
+const accessOrCreateChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
   if (!userId) {
-    console.log("UserID param not sent with request");
+    console.log("userID parameter not sent with request");
     return res.sendStatus(400);
   }
 
-  var isChat = await Chat.find({
+  let isChat = await Chat.find({
     isGroupChat: false,
     $and: [
       { users: { $elemMatch: { $eq: req.user._id } } },
@@ -31,7 +31,7 @@ const accessChat = asyncHandler(async (req, res) => {
   if (isChat.length > 0) {
     res.send(isChat[0]);
   } else {
-    var chatData = {
+    let chatData = {
       chatName: "sender",
       isGroupChat: false,
       users: [req.user._id, userId],
@@ -75,9 +75,9 @@ const fetchChats = asyncHandler(async (req, res) => {
 
 const createGroupChat = asyncHandler(async (req, res) => {
   if (!req.body.users || !req.body.name) {
-    return res.status(400).send({ message: "Please fill al fields" });
+    return res.status(400).send({ message: "Fill al fields" });
   }
-  var users = JSON.parse(req.body.users);
+  let users = JSON.parse(req.body.users);
   if (users.length < 2) {
     return res
       .status(400)
@@ -193,7 +193,7 @@ const fetchActiveUsers = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  accessChat,
+  accessOrCreateChat,
   fetchChats,
   createGroupChat,
   renameGroup,

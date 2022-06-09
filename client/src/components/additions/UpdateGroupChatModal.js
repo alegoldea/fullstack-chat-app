@@ -24,7 +24,11 @@ import { ChatContext } from "../../context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
+const UpdateGroupChatModal = ({
+  fetchContent,
+  setFetchContent,
+  fetchMessages,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { selectedChat, setSelectedChat, user } = useContext(ChatContext);
   const [groupChatName, setGroupChatName] = useState();
@@ -79,7 +83,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       );
 
       userToRemove._id === user._id ? setSelectedChat() : setSelectedChat(data);
-      setFetchAgain(!fetchAgain);
+      setFetchContent(!fetchContent);
       fetchMessages();
       setLoading(false);
     } catch (error) {
@@ -115,7 +119,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
       );
 
       setSelectedChat(data);
-      setFetchAgain(!fetchAgain);
+      setFetchContent(!fetchContent);
       setRenameLoading(false);
     } catch (error) {
       toast({
@@ -200,7 +204,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         config
       );
       setSelectedChat(data);
-      setFetchAgain(!fetchAgain);
+      setFetchContent(!fetchContent);
       setLoading(false);
     } catch (error) {
       toast({

@@ -19,17 +19,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Picker from "emoji-picker-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { getSender, getSenderFull } from "../config/chatLogic.js";
+import { getOtherName, getOtherObject } from "../config/chatLogic.js";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
 import ProfileModel from "./additions/ProfileModel";
 import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
-import ScrollableChat from "./ScrollableChat";
+import ScrollableWindow from "./ScrollableWindow";
 import "../styles.css";
 import TypingAnimation from "./additions/TypingAnimation";
 let selectedChatCompare;
 
-const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+const SingleChat = ({ fetchContent, setFetchContent }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
@@ -104,7 +104,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
         socket.emit("new message", data);
         setMessages([...messages, data]);
-        setFetchAgain(!fetchAgain);
+        setFetchContent(!fetchContent);
       } catch (error) {
         toast({
           title: "Error occured",
@@ -144,7 +144,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           await addChatImage(data.url.toString());
           setNewMessage(data.url.toString());
           setUploaded(!uploaded);
-          // setFetchAgain(!fetchAgain);
+          // setFetchContent(!fetchContent);
         })
         .catch((err) => {
           console.log(err);
@@ -238,7 +238,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       } else {
         setMessages([...messages, newMessageReceived]);
       }
-      setFetchAgain(!fetchAgain);
+      setFetchContent(!fetchContent);
     });
 
     return () => {
@@ -267,10 +267,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
+    let timerLength = 3000;
     setTimeout(() => {
-      var timeNow = new Date().getTime();
-      var timeDiff = timeNow - lastTypingTime;
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
         socket.emit("stop typing", selectedChat._id);
         setTyping(false);
@@ -290,15 +290,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             />
             {!selectedChat.isGroupChat ? (
               <>
-                {getSender(user, selectedChat.users)?.toUpperCase()}
-                <ProfileModel user={getSenderFull(user, selectedChat.users)} />
+                {getOtherName(user, selectedChat.users)?.toUpperCase()}
+                <ProfileModel user={getOtherObject(user, selectedChat.users)} />
               </>
             ) : (
               <>
                 {selectedChat.chatName?.toUpperCase()}
                 <UpdateGroupChatModal
-                  fetchAgain={fetchAgain}
-                  setFetchAgain={setFetchAgain}
+                  fetchContent={fetchContent}
+                  setFetchContent={setFetchContent}
                   fetchMessages={fetchMessages}
                 />
               </>
@@ -315,7 +315,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat messages={messages} />
+                <ScrollableWindow messages={messages} />
               </div>
             )}
             <FormControl onKeyDown={handleKeyPress} isRequired mt={3}>

@@ -11,7 +11,7 @@ import { ChatContext } from "../context/ChatProvider";
 import ImageComponent from "./additions/ImageComponent";
 import "../styles.css";
 
-const ScrollableChat = ({ messages }) => {
+const ScrollableWindow = ({ messages }) => {
   const { user } = useContext(ChatContext);
 
   return (
@@ -74,4 +74,4 @@ const ScrollableChat = ({ messages }) => {
   );
 };
 
-export default ScrollableChat;
+export default ScrollableWindow;
