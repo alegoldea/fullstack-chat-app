@@ -10,13 +10,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { ChatContext } from "../../context/ChatProvider";
+import { ChatContext } from "../context/ChatProvider";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
-import ChatLoading from "../ChatLoading";
-import { getSender, getSenderFull } from "../../config/ChatLogics";
-import GroupChatModal from "./GroupChatModal";
-import { getDate } from "../../config/Functions";
+import ChatLoading from "./additions/ChatLoading";
+import { getSender, getSenderFull } from "../config/chatLogic";
+import GroupChatModal from "./additions/GroupChatModal";
+import { getDate } from "../config/dateConfig";
 
 const FETCH_ACTIVE_STATUS_SECONDS = 2;
 
@@ -57,6 +57,7 @@ const MyChats = ({ fetchAgain }) => {
     return () => {
       clearInterval(intervalId);
     };
+    // eslint-disable-next-line
   }, []);
 
   const fetchChats = async () => {

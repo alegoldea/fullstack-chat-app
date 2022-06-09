@@ -6,10 +6,10 @@ import {
   isSameSender,
   isSameSenderMargin,
   isSameUser,
-} from "../config/ChatLogics";
+} from "../config/chatLogic.js";
 import { ChatContext } from "../context/ChatProvider";
-import ImageComponent from "./ImageComponent";
-import "./styles.css";
+import ImageComponent from "./additions/ImageComponent";
+import "../styles.css";
 
 const ScrollableChat = ({ messages }) => {
   const { user } = useContext(ChatContext);

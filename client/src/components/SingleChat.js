@@ -19,14 +19,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Picker from "emoji-picker-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { getSender, getSenderFull } from "../config/ChatLogics";
+import { getSender, getSenderFull } from "../config/chatLogic.js";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
-import ProfileModel from "./miscellaneous/ProfileModel";
-import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
+import ProfileModel from "./additions/ProfileModel";
+import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
 import ScrollableChat from "./ScrollableChat";
-import "./styles.css";
-import TypingAnimation from "./TypingAnimation";
+import "../styles.css";
+import TypingAnimation from "./additions/TypingAnimation";
 let selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {

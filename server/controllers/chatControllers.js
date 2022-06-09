@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const { chats } = require("../data/data");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
 const Redis = require("ioredis");
