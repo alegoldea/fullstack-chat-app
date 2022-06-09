@@ -36,10 +36,10 @@ import ScrollableChat from "./ScrollableChat";
 import "./styles.css";
 import TypingAnimation from "./TypingAnimation";
 let selectedChatCompare;
+let chatKeyString;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
-  const firstMessage = messages[0];
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
   const [socketConnected, setSocketConnected] = useState(false);
@@ -52,7 +52,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [picker, setPicker] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
-  const [chatKeyString, setChatKeyString] = useState(null);
+  let conversation = messages;
 
   const {
     user,
@@ -63,118 +63,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     keyForEncryptionAndDecryption,
     setKeyForEncryptionAndDecryption,
   } = useContext(ChatContext);
-
-  // When someone starts a chat with you for the first time
-  useEffect(() => {
-    if (selectedChat?.isGroupChat) return;
-    if (!firstMessage) return;
-    if (firstMessage.sender._id === user._id) return;
-    if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) return;
-
-    const decodedMessageInTransit = decode_message_in_transit(
-      JSON.parse(firstMessage.content)
-    );
-
-    console.log(
-      "Received chat for first time: Getting decoded message",
-      decodedMessageInTransit
-    );
-
-    const theirEncodedPublicKey = getSenderFull(
-      user,
-      selectedChat?.users
-    )?.encodedPublicKey;
-    if (!theirEncodedPublicKey) return;
-
-    console.log(
-      "Received chat for first time: Getting their encoded public key",
-      theirEncodedPublicKey
-    );
-
-    const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
-
-    console.log(
-      "Received chat for first time: Decoding their public key",
-      theirPublicKey
-    );
-
-    const decryptedChatKey = decrypt(
-      decodedMessageInTransit,
-      user.keyPair.secretKey,
-      theirPublicKey
-    );
-
-    console.log(
-      "Received chat for first time: Decrypting the chat key",
-      decryptedChatKey
-    );
-
-    localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
-
-    setChatKeyString(decryptedChatKey);
-
-    const cryptoKey = new SimpleCrypto(decryptedChatKey);
-
-    setKeyForEncryptionAndDecryption(cryptoKey);
-  }, [firstMessage, user]);
-
-  // When you start a chat with someone for the first time
-  useEffect(() => {
-    if (selectedChat?.isGroupChat) return;
-
-    (async () => {
-      if (!(selectedChat && selectedChat.users && user)) return;
-      if (selectedChat.latestMessage) return;
-      if (!chatKeyString) return;
-
-      const theirEncodedPublicKey = getSenderFull(
-        user,
-        selectedChat?.users
-      )?.encodedPublicKey;
-      if (!theirEncodedPublicKey) return;
-
-      console.log(
-        "Starting chat: Getting their encoded public key",
-        theirEncodedPublicKey
-      );
-
-      try {
-        const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
-
-        console.log("Starting chat: Getting their public key", theirPublicKey);
-
-        const message_in_transit = encrypt(
-          chatKeyString,
-          user.keyPair.secretKey,
-          theirPublicKey
-        );
-
-        console.log(
-          "Starting chat: Encrypted secret with the message:",
-          chatKeyString,
-          message_in_transit
-        );
-
-        localStorage.setItem(`chatkey_${selectedChat?._id}`, chatKeyString);
-
-        const encodedMessageInTransit =
-          encode_message_in_transit(message_in_transit);
-
-        console.log(
-          "Starting chat: Encoded message in transit:",
-          encodedMessageInTransit
-        );
-
-        await sendAutomaticMessage(JSON.stringify(encodedMessageInTransit));
-        console.log("Sent message in transit! Done!");
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-    })();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChat]);
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -228,6 +116,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         },
         config
       );
+      socket.emit("new message", data);
       setMessages([...messages, data]);
       setFetchAgain(!fetchAgain);
     } catch (error) {
@@ -244,7 +133,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (e) => {
-    if (newMessage && chatKeyString) {
+    if (newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
@@ -376,6 +265,88 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
+    if (!selectedChat) return;
+    selectedChatCompare = selectedChat;
+    if (selectedChat?.isGroupChat) return;
+
+    fetchMessages();
+    if (conversation.length === 0) {
+      const theirEncodedPublicKey = getSenderFull(
+        user,
+        selectedChat?.users
+      )?.encodedPublicKey;
+      if (!theirEncodedPublicKey) return;
+
+      try {
+        const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+        chatKeyString = localStorage.getItem(`chatkey_${selectedChat._id}`);
+
+        const cryptoKey = new SimpleCrypto(chatKeyString);
+        setKeyForEncryptionAndDecryption(cryptoKey);
+
+        const message_in_transit = encrypt(
+          chatKeyString,
+          user.keyPair.secretKey,
+          theirPublicKey
+        );
+
+        // localStorage.setItem(`chatkey_${selectedChat?._id}`, chatKeyString);
+
+        const encodedMessageInTransit =
+          encode_message_in_transit(message_in_transit);
+
+        sendAutomaticMessage(JSON.stringify(encodedMessageInTransit));
+        console.log("Sent message in transit! Done!");
+        console.log(message_in_transit, "---------", messages);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    } else if (conversation.length === 1) {
+      fetchMessages();
+      if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) return;
+
+      const decodedMessageInTransit = decode_message_in_transit(
+        JSON.parse(conversation[0].content)
+      );
+
+      const theirEncodedPublicKey = getSenderFull(
+        user,
+        selectedChat?.users
+      )?.encodedPublicKey;
+      if (!theirEncodedPublicKey) return;
+
+      const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+
+      const decryptedChatKey = decrypt(
+        decodedMessageInTransit,
+        user.keyPair.secretKey,
+        theirPublicKey
+      );
+
+      localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
+
+      chatKeyString = decryptedChatKey;
+
+      const cryptoKey = new SimpleCrypto(decryptedChatKey);
+
+      setKeyForEncryptionAndDecryption(cryptoKey);
+    } else {
+      fetchMessages();
+      const decryptedChatKey = localStorage.getItem(
+        `chatkey_${selectedChat?._id}`
+      );
+      if (!decryptedChatKey) return;
+
+      const cryptoKey = new SimpleCrypto(decryptedChatKey);
+
+      setKeyForEncryptionAndDecryption(cryptoKey);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat]);
+
+  useEffect(() => {
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
@@ -387,32 +358,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.off("typing");
       socket.off("stop typing");
     };
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Loads the key from localStorage when selecting a chat
-  useEffect(() => {
-    fetchMessages();
-    selectedChatCompare = selectedChat;
-
-    if (selectedChat?.isGroupChat) return;
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
-    const decryptedChatKey = localStorage.getItem(
-      `chatkey_${selectedChat?._id}`
-    );
-    if (!decryptedChatKey) return;
-
-    console.log(
-      "Getting decrypted chat key from localStorage",
-      decryptedChatKey
-    );
-
-    setChatKeyString(decryptedChatKey);
-    const cryptoKey = new SimpleCrypto(decryptedChatKey);
-
-    setKeyForEncryptionAndDecryption(cryptoKey);
-  }, [selectedChat]);
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
