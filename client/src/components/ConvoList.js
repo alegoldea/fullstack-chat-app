@@ -9,7 +9,7 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { ChatContext } from "../context/ChatProvider";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
