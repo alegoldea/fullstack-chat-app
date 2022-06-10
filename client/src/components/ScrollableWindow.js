@@ -26,9 +26,7 @@ const ScrollableWindow = ({
   let messages = scrollableMessages;
 
   if (!isGroupChat) {
-    console.log("Scrollable chat key:", chatKey);
-
-    messages = [...scrollableMessages].splice(1).map((m) => {
+    messages = [...scrollableMessages].map((m) => {
       try {
         const decryptedContent = chatKey.decrypt(m.content);
         return { ...m, content: decryptedContent };

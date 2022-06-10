@@ -23,7 +23,11 @@ import SimpleCrypto from "simple-crypto-js";
 import { getOtherName, getOtherObject } from "../config/chatLogics";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
-import { decodePublicKey, decrypt } from "../util/asymmetric";
+import {
+  decodePublicKey,
+  decode_message_in_transit,
+  decrypt,
+} from "../util/asymmetric";
 import ProfileModal from "./additions/ProfileModal";
 import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
 import ScrollableWindow from "./ScrollableWindow";
@@ -226,19 +230,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    //fetchMessages();
-    if (!selectedChat) return;
+    fetchMessages();
     selectedChatCompare = selectedChat;
+    if (!selectedChat) return;
     if (selectedChat?.isGroupChat) return;
     if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) {
       const decryptedChatKey = localStorage.getItem(
         `chatkey_${selectedChat?._id}`
       );
-      if (!decryptedChatKey) return;
       const cryptoKey = new SimpleCrypto(decryptedChatKey);
       setKeyForEncryptionAndDecryption(cryptoKey);
       return;
     }
+
+    console.log("Getting here!");
 
     const theirEncodedPublicKey = getOtherObject(
       user,
@@ -247,12 +252,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
 
+    console.log("I have their public key");
+
+    console.log(selectedChat?.chatKey);
+
+    const keyToDecrypt = JSON.parse(selectedChat?.chatKey);
+
+    const decodedMessageInTransit = decode_message_in_transit(keyToDecrypt);
+    console.log(decodedMessageInTransit);
+
     const decryptedChatKey = decrypt(
-      selectedChat?.chatKey,
+      decodedMessageInTransit,
       user.keyPair.secretKey,
       theirPublicKey
     );
 
+    console.log("Problems with decryption?");
     localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
 
     const cryptoKey = new SimpleCrypto(decryptedChatKey);
@@ -291,7 +306,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             (n) => n.sender.name === newMessageReceived.sender.name
           )
         ) {
-          setNotification([newMessageReceived, ...notification]);
+          const messageReceivedDecrypted = {
+            ...newMessageReceived,
+            content: keyForEncryptionAndDecryption.decyrpt(
+              newMessageReceived.content
+            ),
+          };
+          setNotification([messageReceivedDecrypted, ...notification]);
         }
       } else {
         setMessages([...messages, newMessageReceived]);

@@ -22,14 +22,8 @@ const FETCH_ACTIVE_STATUS_SECONDS = 2;
 
 const ConvoList = ({ fetchAgain }) => {
   const toast = useToast();
-  const {
-    selectedChat,
-    setSelectedChat,
-    user,
-    chats,
-    setChats,
-    keyForEncryptionAndDecryption,
-  } = useContext(ChatContext);
+  const { selectedChat, setSelectedChat, user, chats, setChats } =
+    useContext(ChatContext);
   const [activeUserIds, setActiveUserIds] = useState([]);
 
   useEffect(() => {
@@ -99,40 +93,10 @@ const ConvoList = ({ fetchAgain }) => {
 
   const getTextToDisplayUnderAvatar = (chat) => {
     if (!chat.latestMessage) return <></>;
-
     if (chat.latestMessage.sender._id === user._id) {
-      if (!keyForEncryptionAndDecryption) {
-        return `You sent a message`;
-      }
-      try {
-        const decryptedMsg = keyForEncryptionAndDecryption.decrypt(
-          chat?.latestMessage?.content
-        );
-        return `You: ${
-          decryptedMsg.includes(
-            "http://res.cloudinary.com/djeo89oo1/image/upload"
-          )
-            ? "sent an image"
-            : decryptedMsg
-        }`;
-      } catch (error) {
-        return `You sent a message`;
-      }
+      return `You sent a message`;
     } else {
-      try {
-        const decryptedMsg = keyForEncryptionAndDecryption.decrypt(
-          chat?.latestMessage?.content
-        );
-        return `${chat.latestMessage.sender.name} : ${
-          decryptedMsg.includes(
-            "http://res.cloudinary.com/djeo89oo1/image/upload"
-          )
-            ? "sent an image"
-            : decryptedMsg
-        }`;
-      } catch (error) {
-        return `You sent a message`;
-      }
+      return `${chat.latestMessage.sender.name} sent a message`;
     }
   };
 
