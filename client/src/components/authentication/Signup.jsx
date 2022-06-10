@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@chakra-ui/button";
-import { Input } from "@chakra-ui/input";
+import { Input, InputRightElement, InputGroup } from "@chakra-ui/input";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { useState } from "react";
 import { useToast } from "@chakra-ui/react";
@@ -12,8 +12,12 @@ import { Text } from "@chakra-ui/react";
 const Signup = () => {
   const [pic, setPic] = useState();
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
+
   const toast = useToast();
   const navigate = useNavigate();
+
+  const handleClick = () => setShow(!show);
 
   const {
     register,
@@ -170,14 +174,27 @@ const Signup = () => {
       ) : null}
       <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
-        <Input
-          type="password"
-          placeholder="Enter your password"
-          {...register("password", {
-            required: true,
-            validate: validatePassword,
-          })}
-        />
+        <InputGroup>
+          <Input
+            type="password"
+            placeholder="Enter your password"
+            {...register("password", {
+              required: true,
+              validate: validatePassword,
+            })}
+          />
+          <InputRightElement width="4.5rem">
+            <Button
+              h="1.75rem"
+              size="sm"
+              variant="solid"
+              colorScheme="purple"
+              onClick={handleClick}
+            >
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
       </FormControl>
       {errors.password ? (
         <Text color="red" role="alert">
@@ -186,13 +203,26 @@ const Signup = () => {
       ) : null}
       <FormControl id="confirm_password" isRequired>
         <FormLabel>Confirm password</FormLabel>
-        <Input
-          type="password"
-          placeholder="Confirm password"
-          {...register("confirmpass", {
-            required: true,
-          })}
-        />
+        <InputGroup>
+          <Input
+            type="password"
+            placeholder="Confirm password"
+            {...register("confirmpass", {
+              required: true,
+            })}
+          />
+          <InputRightElement width="4.5rem">
+            <Button
+              h="1.75rem"
+              size="sm"
+              variant="solid"
+              colorScheme="purple"
+              onClick={handleClick}
+            >
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
       </FormControl>
       <FormControl id="pic">
         <FormLabel>Upload pic</FormLabel>
