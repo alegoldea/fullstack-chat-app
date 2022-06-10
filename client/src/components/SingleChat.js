@@ -49,8 +49,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [picker, setPicker] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
-  let conversation = messages;
-
   const {
     user,
     selectedChat,
@@ -243,8 +241,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       return;
     }
 
-    console.log("Getting here!");
-
     const theirEncodedPublicKey = getOtherObject(
       user,
       selectedChat?.users
@@ -252,14 +248,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
 
-    console.log("I have their public key");
-
-    console.log(selectedChat?.chatKey);
-
     const keyToDecrypt = JSON.parse(selectedChat?.chatKey);
 
     const decodedMessageInTransit = decode_message_in_transit(keyToDecrypt);
-    console.log(decodedMessageInTransit);
 
     const decryptedChatKey = decrypt(
       decodedMessageInTransit,
@@ -267,7 +258,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       theirPublicKey
     );
 
-    console.log("Problems with decryption?");
     localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
 
     const cryptoKey = new SimpleCrypto(decryptedChatKey);
@@ -306,13 +296,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             (n) => n.sender.name === newMessageReceived.sender.name
           )
         ) {
-          const messageReceivedDecrypted = {
-            ...newMessageReceived,
-            content: keyForEncryptionAndDecryption.decyrpt(
-              newMessageReceived.content
-            ),
-          };
-          setNotification([messageReceivedDecrypted, ...notification]);
+          setNotification([newMessageReceived, ...notification]);
         }
       } else {
         setMessages([...messages, newMessageReceived]);
