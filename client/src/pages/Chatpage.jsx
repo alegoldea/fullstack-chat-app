@@ -1,8 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import ChatBox from "../components/miscellaneous/ChatBox";
-import MyChats from "../components/miscellaneous/MyChats";
-import SideDrawer from "../components/miscellaneous/SideDrawer";
+import ChatBox from "../components/additions/ChatBox";
+import ConvoList from "../components/ConvoList";
+import SideDrawer from "../components/additions/SideDrawer";
 import { ChatContext } from "../context/ChatProvider";
 
 const Chatpage = () => {
@@ -14,7 +14,7 @@ const Chatpage = () => {
       {user && <SideDrawer />}
       <Box d="flex" justifyContent="space-between" w="100%" h="90vh" p="10px">
         {user && (
-          <MyChats setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />
+          <ConvoList setFetchAgain={setFetchAgain} fetchAgain={fetchAgain} />
         )}
         {user && (
           <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />

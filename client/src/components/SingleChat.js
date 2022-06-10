@@ -20,7 +20,7 @@ import axios from "axios";
 import Picker from "emoji-picker-react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import SimpleCrypto from "simple-crypto-js";
-import { getSender, getSenderFull } from "../config/ChatLogics";
+import { getOtherName, getOtherObject } from "../config/chatLogics";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
 import {
@@ -30,11 +30,11 @@ import {
   encode_message_in_transit,
   encrypt,
 } from "../util/asymmetric";
-import ProfileModel from "./miscellaneous/ProfileModel";
-import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
-import ScrollableChat from "./ScrollableChat";
-import "./styles.css";
-import TypingAnimation from "./TypingAnimation";
+import ProfileModal from "./additions/ProfileModal";
+import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
+import ScrollableWindow from "./ScrollableWindow";
+import "../styles.css";
+import TypingAnimation from "./additions/TypingAnimation";
 let selectedChatCompare;
 let chatKeyString;
 
@@ -271,7 +271,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     fetchMessages();
     if (conversation.length === 0) {
-      const theirEncodedPublicKey = getSenderFull(
+      const theirEncodedPublicKey = getOtherObject(
         user,
         selectedChat?.users
       )?.encodedPublicKey;
@@ -310,7 +310,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         JSON.parse(conversation[0].content)
       );
 
-      const theirEncodedPublicKey = getSenderFull(
+      const theirEncodedPublicKey = getOtherObject(
         user,
         selectedChat?.users
       )?.encodedPublicKey;
@@ -433,8 +433,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             />
             {!selectedChat.isGroupChat ? (
               <>
-                {getSender(user, selectedChat.users)?.toUpperCase()}
-                <ProfileModel user={getSenderFull(user, selectedChat.users)} />
+                {getOtherName(user, selectedChat.users)?.toUpperCase()}
+                <ProfileModal user={getOtherObject(user, selectedChat.users)} />
               </>
             ) : (
               <>
@@ -458,7 +458,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableChat
+                <ScrollableWindow
                   scrollableMessages={messages}
                   chatKey={keyForEncryptionAndDecryption}
                   isGroupChat={selectedChat?.isGroupChat || false}

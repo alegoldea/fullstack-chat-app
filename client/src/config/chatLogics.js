@@ -1,8 +1,8 @@
-export const getSender = (loggedUser, users) => {
+export const getOtherName = (loggedUser, users) => {
   return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
 };
 
-export const getSenderFull = (loggedUser, users) => {
+export const getOtherObject = (loggedUser, users) => {
   return users[0]._id === loggedUser._id ? users[1] : users[0];
 };
 

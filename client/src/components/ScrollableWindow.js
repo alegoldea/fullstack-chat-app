@@ -7,12 +7,12 @@ import {
   isSameSender,
   isSameSenderMargin,
   isSameUser,
-} from "../config/ChatLogics";
+} from "../config/chatLogics";
 import { ChatContext } from "../context/ChatProvider";
-import ImageComponent from "./ImageComponent";
-import "./styles.css";
+import ImageComponent from "./additions/ImageComponent";
+import "../styles.css";
 
-const ScrollableChat = ({
+const ScrollableWindow = ({
   scrollableMessages,
   chatKey,
   isGroupChat = false,
@@ -98,4 +98,4 @@ const ScrollableChat = ({
   );
 };
 
-export default ScrollableChat;
+export default ScrollableWindow;

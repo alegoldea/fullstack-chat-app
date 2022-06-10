@@ -10,17 +10,17 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { ChatContext } from "../../context/ChatProvider";
+import { ChatContext } from "../context/ChatProvider";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
-import ChatLoading from "../ChatLoading";
-import { getSender, getSenderFull } from "../../config/ChatLogics";
-import GroupChatModal from "./GroupChatModal";
-import { getDate } from "../../config/Functions";
+import ChatLoading from "./additions/ChatLoading";
+import { getOtherName, getOtherObject } from "../config/chatLogics";
+import GroupChatModal from "./additions/GroupChatModal";
+import { getDate } from "../config/dateConfig";
 
 const FETCH_ACTIVE_STATUS_SECONDS = 2;
 
-const MyChats = ({ fetchAgain }) => {
+const ConvoList = ({ fetchAgain }) => {
   const toast = useToast();
   const {
     selectedChat,
@@ -63,6 +63,7 @@ const MyChats = ({ fetchAgain }) => {
     return () => {
       clearInterval(intervalId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchChats = async () => {
@@ -206,14 +207,14 @@ const MyChats = ({ fetchAgain }) => {
                         w="10"
                         size="sm"
                         cursor="pointer"
-                        name={getSenderFull(user, chat.users).name}
-                        src={getSenderFull(user, chat.users).pic}
+                        name={getOtherObject(user, chat.users).name}
+                        src={getOtherObject(user, chat.users).pic}
                       >
                         <AvatarBadge
                           boxSize="1.25em"
                           bg={
                             activeUserIds.includes(
-                              getSenderFull(user, chat.users)._id
+                              getOtherObject(user, chat.users)._id
                             )
                               ? "green.500"
                               : "gray"
@@ -259,7 +260,7 @@ const MyChats = ({ fetchAgain }) => {
                       _dark={{ color: "white" }}
                     >
                       {!chat.isGroupChat
-                        ? getSender(user, chat.users)
+                        ? getOtherName(user, chat.users)
                         : chat.chatName}
                     </Text>
                     <Box d="flex" flexDir="row" justifyContent="space-between">
@@ -295,4 +296,4 @@ const MyChats = ({ fetchAgain }) => {
   );
 };
 
-export default MyChats;
+export default ConvoList;

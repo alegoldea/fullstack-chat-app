@@ -26,12 +26,12 @@ import React, { useContext, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import NotificationBadge, { Effect } from "react-notification-badge";
 import { useNavigate } from "react-router-dom";
-import { getSender } from "../../config/ChatLogics";
+import { getOtherName } from "../../config/chatLogics";
 import { ChatContext } from "../../context/ChatProvider";
-import ChatLoading from "../ChatLoading";
+import ChatLoading from "./ChatLoading";
 import ToggleTheme from "../theme/ToggleTheme";
 import UserListItem from "../userAvatar/UserListItem";
-import ProfileModel from "./ProfileModel";
+import ProfileModal from "./ProfileModal";
 import { generateChatKey } from "../../util/symmetric";
 
 const SideDrawer = () => {
@@ -189,7 +189,10 @@ const SideDrawer = () => {
                 >
                   {notif.chat.isGroupChat
                     ? `New messages in ${notif.chat.chatName}`
-                    : `New messages from ${getSender(user, notif.chat.users)}`}
+                    : `New messages from ${getOtherName(
+                        user,
+                        notif.chat.users
+                      )}`}
                 </MenuItem>
               ))}
             </MenuList>
@@ -214,9 +217,9 @@ const SideDrawer = () => {
               </Box>
             </MenuButton>
             <MenuList>
-              <ProfileModel user={user}>
+              <ProfileModal user={user}>
                 <MenuItem>Profile</MenuItem>
-              </ProfileModel>
+              </ProfileModal>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Log Out</MenuItem>
             </MenuList>
