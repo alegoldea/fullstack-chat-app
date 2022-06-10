@@ -1,4 +1,4 @@
-import { Avatar, Tooltip } from "@chakra-ui/react";
+import { Avatar, AvatarBadge, Tooltip } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import ScrollableFeed from "react-scrollable-feed";
 import {
@@ -8,11 +8,13 @@ import {
   isSameUser,
 } from "../config/chatLogic.js";
 import { ChatContext } from "../context/ChatProvider";
-import ImageComponent from "./additions/ImageComponent";
+import { useActiveUserIds } from "../hooks/useActiveUserIds";
 import "../styles.css";
+import ImageComponent from "./additions/ImageComponent";
 
 const ScrollableWindow = ({ messages }) => {
   const { user } = useContext(ChatContext);
+  const activeUserIds = useActiveUserIds(user);
 
   return (
     <ScrollableFeed>
@@ -35,7 +37,16 @@ const ScrollableWindow = ({ messages }) => {
                   cursor="pointer"
                   name={m.sender.name}
                   src={m.sender.pic}
-                />
+                >
+                  <AvatarBadge
+                    boxSize="1.25em"
+                    bg={
+                      activeUserIds.includes(m.sender._id)
+                        ? "green.500"
+                        : "gray"
+                    }
+                  />
+                </Avatar>
               </Tooltip>
             ) : (
               <></>

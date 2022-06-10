@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Text } from "@chakra-ui/react";
+import socket from "../../config/socketClient";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -38,6 +39,9 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
+      if (!socket.connected) {
+        socket.open();
+      }
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/chats");

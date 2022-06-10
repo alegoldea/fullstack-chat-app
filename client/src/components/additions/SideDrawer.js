@@ -32,6 +32,7 @@ import ChatLoading from "./ChatLoading";
 import ToggleTheme from "../theme/ToggleTheme";
 import UserListItem from "../userAvatar/UserListItem";
 import ProfileModal from "./ProfileModal";
+import socket from "../../config/socketClient";
 
 const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
@@ -58,6 +59,7 @@ const SideDrawer = () => {
 
   const logoutHandler = () => {
     setSelectedChat();
+    socket.close();
     localStorage.removeItem("userInfo");
     navigate("/");
   };

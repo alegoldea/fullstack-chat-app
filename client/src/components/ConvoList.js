@@ -17,48 +17,14 @@ import ChatLoading from "./additions/ChatLoading";
 import { getOtherName, getOtherObject } from "../config/chatLogic";
 import GroupChatModal from "./additions/GroupChatModal";
 import { getDate } from "../config/dateConfig";
-
-const FETCH_ACTIVE_STATUS_SECONDS = 2;
+import { useActiveUserIds } from "../hooks/useActiveUserIds";
 
 const ConvoList = ({ fetchContent }) => {
   const toast = useToast();
   const { selectedChat, setSelectedChat, user, chats, setChats } =
     useContext(ChatContext);
-  const [activeUserIds, setActiveUserIds] = useState([]);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      (async () => {
-        try {
-          const config = {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          };
-
-          const { data } = await axios.get(
-            "http://localhost:5000/api/chat/active-chat",
-            config
-          );
-          setActiveUserIds(data);
-        } catch (error) {
-          toast({
-            title: "Error Occured",
-            description: "Failed to load active chats",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-            position: "bottom-left",
-          });
-          return;
-        }
-      })();
-    }, FETCH_ACTIVE_STATUS_SECONDS * 1000);
-    return () => {
-      clearInterval(intervalId);
-    };
-    // eslint-disable-next-line
-  }, []);
+  const activeUserIds = useActiveUserIds(user);
 
   const fetchChats = async () => {
     try {
