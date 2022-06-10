@@ -22,7 +22,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { getOtherName, getOtherObject } from "../config/chatLogic.js";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
-import ProfileModel from "./additions/ProfileModel";
+import ProfileModal from "./additions/ProfileModal";
 import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
 import ScrollableWindow from "./ScrollableWindow";
 import "../styles.css";
@@ -291,7 +291,7 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
             {!selectedChat.isGroupChat ? (
               <>
                 {getOtherName(user, selectedChat.users)?.toUpperCase()}
-                <ProfileModel user={getOtherObject(user, selectedChat.users)} />
+                <ProfileModal user={getOtherObject(user, selectedChat.users)} />
               </>
             ) : (
               <>

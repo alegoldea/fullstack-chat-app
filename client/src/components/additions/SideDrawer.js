@@ -31,7 +31,7 @@ import { ChatContext } from "../../context/ChatProvider";
 import ChatLoading from "./ChatLoading";
 import ToggleTheme from "../theme/ToggleTheme";
 import UserListItem from "../userAvatar/UserListItem";
-import ProfileModel from "./ProfileModel";
+import ProfileModal from "./ProfileModal";
 
 const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
@@ -211,9 +211,9 @@ const SideDrawer = () => {
               </Box>
             </MenuButton>
             <MenuList>
-              <ProfileModel user={user}>
+              <ProfileModal user={user}>
                 <MenuItem>Profile</MenuItem>
-              </ProfileModel>
+              </ProfileModal>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Log Out</MenuItem>
             </MenuList>
