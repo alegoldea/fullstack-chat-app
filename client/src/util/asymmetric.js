@@ -28,6 +28,7 @@ function encode_message_in_transit(message) {
     one_time_code: naclUtil.encodeBase64(message.one_time_code),
   };
 }
+
 function decode_message_in_transit(message) {
   return {
     cipher_text: naclUtil.decodeBase64(message.cipher_text),

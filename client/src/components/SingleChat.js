@@ -23,20 +23,13 @@ import SimpleCrypto from "simple-crypto-js";
 import { getOtherName, getOtherObject } from "../config/chatLogics";
 import socket from "../config/socketClient";
 import { ChatContext } from "../context/ChatProvider";
-import {
-  decodePublicKey,
-  decode_message_in_transit,
-  decrypt,
-  encode_message_in_transit,
-  encrypt,
-} from "../util/asymmetric";
+import { decodePublicKey, decrypt } from "../util/asymmetric";
 import ProfileModal from "./additions/ProfileModal";
 import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
 import ScrollableWindow from "./ScrollableWindow";
 import "../styles.css";
 import TypingAnimation from "./additions/TypingAnimation";
 let selectedChatCompare;
-let chatKeyString;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -92,38 +85,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       toast({
         title: "Error occured",
         description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-    }
-  };
-
-  const sendAutomaticMessage = async (message) => {
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-      const { data } = await axios.post(
-        `http://localhost:5000/api/message`,
-        {
-          content: message,
-          chatId: selectedChat._id,
-        },
-        config
-      );
-      socket.emit("new message", data);
-      setMessages([...messages, data]);
-      setFetchAgain(!fetchAgain);
-    } catch (error) {
-      console.log("AUTOMATIC MSG:", error);
-      toast({
-        title: "Error occured",
-        description: "Failed to send automatic message",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -265,84 +226,38 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
+    //fetchMessages();
     if (!selectedChat) return;
     selectedChatCompare = selectedChat;
     if (selectedChat?.isGroupChat) return;
-
-    fetchMessages();
-    if (conversation.length === 0) {
-      const theirEncodedPublicKey = getOtherObject(
-        user,
-        selectedChat?.users
-      )?.encodedPublicKey;
-      if (!theirEncodedPublicKey) return;
-
-      try {
-        const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
-        chatKeyString = localStorage.getItem(`chatkey_${selectedChat._id}`);
-
-        const cryptoKey = new SimpleCrypto(chatKeyString);
-        setKeyForEncryptionAndDecryption(cryptoKey);
-
-        const message_in_transit = encrypt(
-          chatKeyString,
-          user.keyPair.secretKey,
-          theirPublicKey
-        );
-
-        // localStorage.setItem(`chatkey_${selectedChat?._id}`, chatKeyString);
-
-        const encodedMessageInTransit =
-          encode_message_in_transit(message_in_transit);
-
-        sendAutomaticMessage(JSON.stringify(encodedMessageInTransit));
-        console.log("Sent message in transit! Done!");
-        console.log(message_in_transit, "---------", messages);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-    } else if (conversation.length === 1) {
-      fetchMessages();
-      if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) return;
-
-      const decodedMessageInTransit = decode_message_in_transit(
-        JSON.parse(conversation[0].content)
-      );
-
-      const theirEncodedPublicKey = getOtherObject(
-        user,
-        selectedChat?.users
-      )?.encodedPublicKey;
-      if (!theirEncodedPublicKey) return;
-
-      const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
-
-      const decryptedChatKey = decrypt(
-        decodedMessageInTransit,
-        user.keyPair.secretKey,
-        theirPublicKey
-      );
-
-      localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
-
-      chatKeyString = decryptedChatKey;
-
-      const cryptoKey = new SimpleCrypto(decryptedChatKey);
-
-      setKeyForEncryptionAndDecryption(cryptoKey);
-    } else {
-      fetchMessages();
+    if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) {
       const decryptedChatKey = localStorage.getItem(
         `chatkey_${selectedChat?._id}`
       );
       if (!decryptedChatKey) return;
-
       const cryptoKey = new SimpleCrypto(decryptedChatKey);
-
       setKeyForEncryptionAndDecryption(cryptoKey);
+      return;
     }
 
+    const theirEncodedPublicKey = getOtherObject(
+      user,
+      selectedChat?.users
+    )?.encodedPublicKey;
+
+    const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+
+    const decryptedChatKey = decrypt(
+      selectedChat?.chatKey,
+      user.keyPair.secretKey,
+      theirPublicKey
+    );
+
+    localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
+
+    const cryptoKey = new SimpleCrypto(decryptedChatKey);
+
+    setKeyForEncryptionAndDecryption(cryptoKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
 

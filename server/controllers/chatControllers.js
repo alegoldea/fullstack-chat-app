@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const { chats } = require("../data/data");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
 const Redis = require("ioredis");
@@ -7,9 +6,9 @@ const Redis = require("ioredis");
 const redisClient = new Redis();
 
 const accessChat = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userObject, chatKey } = req.body;
 
-  if (!userId) {
+  if (!userObject._id) {
     console.log("UserID param not sent with request");
     return res.sendStatus(400);
   }
@@ -18,7 +17,7 @@ const accessChat = asyncHandler(async (req, res) => {
     isGroupChat: false,
     $and: [
       { users: { $elemMatch: { $eq: req.user._id } } },
-      { users: { $elemMatch: { $eq: userId } } },
+      { users: { $elemMatch: { $eq: userObject._id } } },
     ],
   })
     .populate("users", "-password")
@@ -35,8 +34,9 @@ const accessChat = asyncHandler(async (req, res) => {
     var chatData = {
       chatName: "sender",
       isGroupChat: false,
-      users: [req.user._id, userId],
+      users: [req.user._id, userObject._id],
       images: [],
+      chatKey: chatKey,
     };
 
     try {
@@ -93,6 +93,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
       isGroupChat: true,
       groupAdmin: req.user,
       image: [],
+      chatKey: "",
     });
 
     const FullGroupChat = await Chat.findOne({

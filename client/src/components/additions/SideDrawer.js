@@ -33,6 +33,11 @@ import ToggleTheme from "../theme/ToggleTheme";
 import UserListItem from "../userAvatar/UserListItem";
 import ProfileModal from "./ProfileModal";
 import { generateChatKey } from "../../util/symmetric";
+import {
+  decodePublicKey,
+  encode_message_in_transit,
+  encrypt,
+} from "../../util/asymmetric";
 
 const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
@@ -96,7 +101,7 @@ const SideDrawer = () => {
     }
   };
 
-  const accessChat = async (userId) => {
+  const accessChat = async (userObject) => {
     try {
       setLoadingChat(true);
       const config = {
@@ -106,18 +111,45 @@ const SideDrawer = () => {
         },
       };
 
+      const chatKey = generateChatKey();
+
+      console.log("Generated key!");
+      console.log(userObject);
+      const theirEncodedPublicKey = userObject.encodedPublicKey;
+      console.log(theirEncodedPublicKey);
+
+      const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+
+      //const cryptoKey = new SimpleCrypto(chatKey);
+      //setKeyForEncryptionAndDecryption(cryptoKey);
+
+      const message_in_transit = encrypt(
+        chatKey,
+        user.keyPair.secretKey,
+        theirPublicKey
+      );
+
+      console.log("Got here!");
+
+      const encodedMessageInTransit =
+        encode_message_in_transit(message_in_transit);
+
+      const toBeSent = JSON.stringify(encodedMessageInTransit);
+
+      console.log(toBeSent);
+
       const { data } = await axios.post(
         `http://localhost:5000/api/chat`,
-        { userId },
+        { userObject, chatKey: toBeSent },
         config
       );
 
-      const chatKey = generateChatKey();
       if (localStorage.getItem(`chatkey_${data._id}`) === null) {
         localStorage.setItem(`chatkey_${data._id}`, chatKey);
       }
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      console.log(data);
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
@@ -248,7 +280,7 @@ const SideDrawer = () => {
                 <UserListItem
                   key={user._id}
                   user={user}
-                  handleFunction={() => accessChat(user._id)}
+                  handleFunction={() => accessChat(user)}
                 />
               ))
             )}
