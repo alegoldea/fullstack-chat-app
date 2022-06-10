@@ -258,7 +258,7 @@ const UpdateGroupChatModal = ({
               justifyContent="center"
             >
               <AvatarGroup max={4}>
-                {selectedChat.users.slice(0, 7).map((u) => (
+                {selectedChat.users.map((u) => (
                   <Avatar
                     key={u._id}
                     src={u.pic}

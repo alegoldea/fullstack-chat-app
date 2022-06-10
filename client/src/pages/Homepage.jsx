@@ -21,20 +21,25 @@ const Homepage = () => {
         d="flex"
         justifyContent="center"
         p={3}
+        gap="10px"
         bg={useColorModeValue("white", "gray.700")}
         w="100%"
         m="80px 0 15px 0"
-        borderRadius="lg"
+        borderRadius="md"
         borderWidth="1px"
       >
         <Text
-          fontSize="5x1"
+          fontSize={{ md: "25px" }}
           fontWeight="800"
           fontFamily="Work sans"
           _dark={{ color: "white" }}
+          textShadow="2px 2px 8px purple"
         >
           Teletype
         </Text>
+        <div class="fa-1x">
+          <i style={{ position: "relative" }} class="fa-solid fa-envelope"></i>
+        </div>
       </Box>
       <Box
         p={4}

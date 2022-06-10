@@ -60,7 +60,7 @@ const SideDrawer = () => {
   const logoutHandler = () => {
     setSelectedChat();
     socket.close();
-    localStorage.removeItem("userInfo");
+    localStorage.clear();
     navigate("/");
   };
 
