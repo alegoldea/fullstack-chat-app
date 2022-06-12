@@ -92,7 +92,7 @@ const Signup = () => {
       // Get the body with the pic field
       const bodyWithPic = { ...info, pic: pic };
       const { data } = await axios.post(
-        "http://localhost:5000/api/user",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user`,
         bodyWithPic,
         config
       );

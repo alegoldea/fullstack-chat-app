@@ -62,7 +62,7 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
         },
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/chat/addimage",
+        `${process.env.REACT_APP_BACKEND_URL}/api/chat/addimage`,
         {
           chatId: selectedChat._id,
           imageURL: imageURL,
@@ -95,7 +95,7 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
 
         setNewMessage("");
         const { data } = await axios.post(
-          `http://localhost:5000/api/message`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/message`,
           {
             content: newMessage,
             chatId: selectedChat._id,
@@ -182,7 +182,7 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
       };
       setLoading(true);
       const { data } = await axios.get(
-        `http://localhost:5000/api/message/${selectedChat._id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
