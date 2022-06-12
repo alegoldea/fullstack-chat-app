@@ -12,7 +12,7 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const Redis = require("ioredis");
 
-const redisClient = new Redis();
+const redisClient = new Redis(process.env.REDIS_URL || "");
 
 const app = express();
 connectDB();
