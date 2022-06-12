@@ -37,7 +37,7 @@ const ConvoList = ({ fetchAgain }) => {
           };
 
           const { data } = await axios.get(
-            "http://localhost:5000/api/chat/active-chat",
+            `${process.env.REACT_APP_BACKEND_URL}/api/chat/active-chat`,
             config
           );
           setActiveUserIds(data);
@@ -69,7 +69,7 @@ const ConvoList = ({ fetchAgain }) => {
       };
 
       const { data } = await axios.get(
-        "http://localhost:5000/api/chat",
+        `${process.env.REACT_APP_BACKEND_URL}/api/chat`,
         config
       );
       setChats(data);

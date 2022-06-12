@@ -92,7 +92,7 @@ const Signup = () => {
         encodedPublicKey: encodedKeyPair.encodedPublicKey,
       };
       const { data } = await axios.post(
-        "http://localhost:5000/api/user",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user`,
         bodyWithPicAndPublicKey,
         config
       );

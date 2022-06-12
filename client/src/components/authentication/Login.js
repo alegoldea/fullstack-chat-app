@@ -25,7 +25,7 @@ const Login = () => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:5000/api/user/login",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/login`,
         info,
         config
       );

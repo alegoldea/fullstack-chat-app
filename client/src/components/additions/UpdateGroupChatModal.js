@@ -69,7 +69,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:5000/api/chat/groupremove`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
           groupAdmin: newAdmin,
@@ -106,7 +106,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        "http://localhost:5000/api/chat/rename",
+        `${process.env.REACT_APP_BACKEND_URL}/api/chat/rename`,
         {
           chatId: selectedChat._id,
           chatName: groupChatName,
@@ -145,7 +145,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:5000/api/user?search=${search}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user?search=${search}`,
         config
       );
       setLoading(false);
@@ -192,7 +192,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         },
       };
       const { data } = await axios.put(
-        `http://localhost:5000/api/chat/groupadd`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
           userId: user1._id,

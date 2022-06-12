@@ -83,7 +83,7 @@ const SideDrawer = () => {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:5000/api/user?search=${search}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/user?search=${search}`,
         config
       );
       setLoading(false);
@@ -139,7 +139,7 @@ const SideDrawer = () => {
       console.log(toBeSent);
 
       const { data } = await axios.post(
-        `http://localhost:5000/api/chat`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/chat`,
         { userObject, chatKey: toBeSent },
         config
       );

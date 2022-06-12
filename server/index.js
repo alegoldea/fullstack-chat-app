@@ -41,6 +41,8 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
+const ORIGIN_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
 server.listen(5000, () => {
   console.log(`Server listening on port ${PORT}`);
 });
@@ -48,7 +50,7 @@ server.listen(5000, () => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: ORIGIN_URL,
     credentials: true,
   },
 });
