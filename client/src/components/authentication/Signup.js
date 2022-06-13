@@ -185,7 +185,15 @@ const Signup = () => {
           placeholder="Enter your password"
           {...register("password", {
             required: true,
-            validate: validatePassword,
+            minLength: {
+              value: 6,
+              message: "Password should be at least 6 characters long",
+            },
+            pattern: {
+              value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#.$*])/,
+              message:
+                "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol.",
+            },
           })}
         />
       </FormControl>

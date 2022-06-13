@@ -58,8 +58,8 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-// /api/user?search=alexandra
-const allUsers = asyncHandler(async (req, res) => {
+// /api/user?search=andrei
+const searchUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
         $or: [
@@ -73,4 +73,4 @@ const allUsers = asyncHandler(async (req, res) => {
   res.send(users);
 });
 
-module.exports = { registerUser, authUser, allUsers };
+module.exports = { registerUser, authUser, searchUsers };
