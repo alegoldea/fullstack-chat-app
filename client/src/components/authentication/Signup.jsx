@@ -20,6 +20,8 @@ const Signup = () => {
 
   const [encodedKeyPair] = useState(() => encodeKeyPair(generateKeyPair()));
 
+  console.log(encodedKeyPair);
+
   const handleClick = () => setShow(!show);
 
   const {

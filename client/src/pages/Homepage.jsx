@@ -38,7 +38,10 @@ const Homepage = () => {
           Teletype
         </Text>
         <div class="fa-1x">
-          <i style={{ position: "relative" }} class="fa-solid fa-envelope"></i>
+          <i
+            style={{ position: "relative" }}
+            className="fa-solid fa-envelope"
+          ></i>
         </div>
       </Box>
       <Box
