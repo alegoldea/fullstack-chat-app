@@ -24,7 +24,7 @@ const Homepage = () => {
         gap="10px"
         bg={useColorModeValue("white", "gray.700")}
         w="100%"
-        m="80px 0 15px 0"
+        m="30px 0 15px 0"
         borderRadius="md"
         borderWidth="1px"
       >
@@ -49,7 +49,7 @@ const Homepage = () => {
         bg={useColorModeValue("white", "gray.700")}
         w="100%"
         borderRadius="lg"
-        borderWidth="1px"
+        borderWidth="0.5px"
       >
         <Tabs variant="soft-rounded" colorScheme="purple">
           <TabList mb="1em">
