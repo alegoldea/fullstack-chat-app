@@ -57,6 +57,15 @@ const ConvoList = ({ fetchContent }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchContent]);
 
+  const getTextToDisplayUnderAvatar = (chat) => {
+    if (!chat.latestMessage) return <></>;
+    if (chat.latestMessage.sender._id === user._id) {
+      return `You sent a message`;
+    } else {
+      return `${chat.latestMessage.sender.name} sent a message`;
+    }
+  };
+
   return (
     <Box
       d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -190,25 +199,7 @@ const ConvoList = ({ fetchContent }) => {
                         fontSize={{ md: "xs", lg: "sm" }}
                         _dark={{ color: "gray.300" }}
                       >
-                        {!chat.latestMessage ? (
-                          <></>
-                        ) : chat.latestMessage.sender._id === user._id ? (
-                          `You: ${
-                            chat?.latestMessage?.content?.includes(
-                              "http://res.cloudinary.com/djeo89oo1/image/upload"
-                            )
-                              ? "sent an image"
-                              : chat.latestMessage.content
-                          }`
-                        ) : (
-                          `${chat.latestMessage.sender.name} : ${
-                            chat?.latestMessage?.content?.includes(
-                              "http://res.cloudinary.com/djeo89oo1/image/upload"
-                            )
-                              ? "sent an image"
-                              : chat.latestMessage.content
-                          }`
-                        )}
+                        {getTextToDisplayUnderAvatar(chat)}
                       </Text>
                       <Text
                         isTruncated

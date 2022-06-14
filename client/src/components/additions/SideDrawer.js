@@ -33,6 +33,12 @@ import ToggleTheme from "../theme/ToggleTheme";
 import UserListItem from "../userAvatar/UserListItem";
 import ProfileModal from "./ProfileModal";
 import socket from "../../config/socketClient";
+import { generateChatKey } from "../../util/symmetric";
+import {
+  decodePublicKey,
+  encode_message_in_transit,
+  encrypt,
+} from "../../util/asymmetric";
 
 const SideDrawer = () => {
   const [loading, setLoading] = useState(false);
@@ -60,7 +66,7 @@ const SideDrawer = () => {
   const logoutHandler = () => {
     setSelectedChat();
     socket.close();
-    localStorage.clear();
+    localStorage.removeItem("userInfo");
     navigate("/");
   };
 
@@ -97,7 +103,7 @@ const SideDrawer = () => {
     }
   };
 
-  const accessOrCreateChat = async (userId) => {
+  const accessOrCreateChat = async (userObject) => {
     try {
       setLoadingChat(true);
       const config = {
@@ -107,11 +113,34 @@ const SideDrawer = () => {
         },
       };
 
+      const chatKey = generateChatKey();
+      console.log("Generated key!");
+      console.log(userObject);
+      const theirEncodedPublicKey = userObject.encodedPublicKey;
+      console.log(theirEncodedPublicKey);
+      const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+      //const cryptoKey = new SimpleCrypto(chatKey);
+      //setKeyForEncryptionAndDecryption(cryptoKey);
+      const message_in_transit = encrypt(
+        chatKey,
+        user.keyPair.secretKey,
+        theirPublicKey
+      );
+      console.log("Got here!");
+      const encodedMessageInTransit =
+        encode_message_in_transit(message_in_transit);
+      const toBeSent = JSON.stringify(encodedMessageInTransit);
+      console.log(toBeSent);
+
       const { data } = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/chat`,
-        { userId },
+        { userObject, chatKey: toBeSent },
         config
       );
+
+      if (localStorage.getItem(`chatkey_${data._id}`) === null) {
+        localStorage.setItem(`chatkey_${data._id}`, chatKey);
+      }
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
@@ -244,7 +273,7 @@ const SideDrawer = () => {
                 <UserListItem
                   key={user._id}
                   user={user}
-                  handleFunction={() => accessOrCreateChat(user._id)}
+                  handleFunction={() => accessOrCreateChat(user)}
                 />
               ))
             )}

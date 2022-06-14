@@ -27,6 +27,13 @@ import UpdateGroupChatModal from "./additions/UpdateGroupChatModal";
 import ScrollableWindow from "./ScrollableWindow";
 import "../styles.css";
 import TypingAnimation from "./additions/TypingAnimation";
+import SimpleCrypto from "simple-crypto-js";
+import {
+  decodePublicKey,
+  decode_message_in_transit,
+  decrypt,
+} from "../util/asymmetric";
+
 let selectedChatCompare;
 
 const SingleChat = ({ fetchContent, setFetchContent }) => {
@@ -43,8 +50,15 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
   const [picker, setPicker] = useState(false);
   const [chosenEmoji, setChosenEmoji] = useState(null);
 
-  const { user, selectedChat, setSelectedChat, notification, setNotification } =
-    useContext(ChatContext);
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notification,
+    setNotification,
+    keyForEncryptionAndDecryption,
+    setKeyForEncryptionAndDecryption,
+  } = useContext(ChatContext);
 
   const onEmojiClick = (event, emojiObject) => {
     setChosenEmoji(emojiObject);
@@ -94,10 +108,20 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
         };
 
         setNewMessage("");
+        let messageToBeSent = newMessage;
+        if (!selectedChat.isGroupChat) {
+          messageToBeSent = keyForEncryptionAndDecryption.encrypt(newMessage);
+          console.log("Original message:", newMessage);
+          console.log("Encrypted message:", messageToBeSent);
+          console.log(
+            "Decrypted message:",
+            keyForEncryptionAndDecryption.decrypt(messageToBeSent)
+          );
+        }
         const { data } = await axios.post(
           `${process.env.REACT_APP_BACKEND_URL}/api/message`,
           {
-            content: newMessage,
+            content: messageToBeSent,
             chatId: selectedChat._id,
           },
           config
@@ -217,6 +241,32 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
+    if (!selectedChat) return;
+    if (selectedChat?.isGroupChat) return;
+    if (localStorage.getItem(`chatkey_${selectedChat?._id}`) !== null) {
+      const decryptedChatKey = localStorage.getItem(
+        `chatkey_${selectedChat?._id}`
+      );
+      const cryptoKey = new SimpleCrypto(decryptedChatKey);
+      setKeyForEncryptionAndDecryption(cryptoKey);
+      return;
+    }
+    const theirEncodedPublicKey = getOtherObject(
+      user,
+      selectedChat?.users
+    )?.encodedPublicKey;
+    const theirPublicKey = decodePublicKey(theirEncodedPublicKey);
+    const keyToDecrypt = JSON.parse(selectedChat?.chatKey);
+    const decodedMessageInTransit = decode_message_in_transit(keyToDecrypt);
+    const decryptedChatKey = decrypt(
+      decodedMessageInTransit,
+      user.keyPair.secretKey,
+      theirPublicKey
+    );
+    localStorage.setItem(`chatkey_${selectedChat?._id}`, decryptedChatKey);
+    const cryptoKey = new SimpleCrypto(decryptedChatKey);
+    setKeyForEncryptionAndDecryption(cryptoKey);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
 
@@ -315,7 +365,11 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
               />
             ) : (
               <div className="messages">
-                <ScrollableWindow messages={messages} />
+                <ScrollableWindow
+                  scrollableMessages={messages}
+                  chatKey={keyForEncryptionAndDecryption}
+                  isGroupChat={selectedChat?.isGroupChat || false}
+                />
               </div>
             )}
             <FormControl onKeyDown={handleKeyPress} isRequired mt={3}>

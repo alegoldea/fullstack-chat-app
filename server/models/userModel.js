@@ -11,6 +11,7 @@ const userModel = mongoose.Schema(
       default:
         "https://icon-library.com/images/avatar-icon-images/avatar-icon-images-27.jpg",
     },
+    encodedPublicKey: { type: String, required: true },
   },
   { timestamps: true }
 );

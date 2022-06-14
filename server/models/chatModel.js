@@ -19,6 +19,7 @@ const chatModel = mongoose.Schema(
       ref: "User",
     },
     images: [{ type: String, trim: true }],
+    chatKey: { type: String, trim: true },
   },
   {
     timestamps: true,

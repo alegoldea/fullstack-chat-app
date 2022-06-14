@@ -6,10 +6,9 @@ const Redis = require("ioredis");
 const redisClient = new Redis();
 
 const accessOrCreateChat = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
-
-  if (!userId) {
-    console.log("userID parameter not sent with request");
+  const { userObject, chatKey } = req.body;
+  if (!userObject._id) {
+    console.log("UserID param not sent with request");
     return res.sendStatus(400);
   }
 
@@ -17,7 +16,7 @@ const accessOrCreateChat = asyncHandler(async (req, res) => {
     isGroupChat: false,
     $and: [
       { users: { $elemMatch: { $eq: req.user._id } } },
-      { users: { $elemMatch: { $eq: userId } } },
+      { users: { $elemMatch: { $eq: userObject._id } } },
     ],
   })
     .populate("users", "-password")
@@ -34,8 +33,9 @@ const accessOrCreateChat = asyncHandler(async (req, res) => {
     let chatData = {
       chatName: "sender",
       isGroupChat: false,
-      users: [req.user._id, userId],
+      users: [req.user._id, userObject._id],
       images: [],
+      chatKey: chatKey,
     };
 
     try {
@@ -92,6 +92,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
       isGroupChat: true,
       groupAdmin: req.user,
       image: [],
+      chatKey: "",
     });
 
     const FullGroupChat = await Chat.findOne({

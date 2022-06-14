@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Text } from "@chakra-ui/react";
+import { encodeKeyPair, generateKeyPair } from "../../util/asymmetric";
 
 const Signup = () => {
   const [pic, setPic] = useState();
@@ -16,6 +17,8 @@ const Signup = () => {
 
   const toast = useToast();
   const navigate = useNavigate();
+
+  const [encodedKeyPair] = useState(() => encodeKeyPair(generateKeyPair()));
 
   const handleClick = () => setShow(!show);
 
@@ -89,11 +92,14 @@ const Signup = () => {
         },
       };
 
-      // Get the body with the pic field
-      const bodyWithPic = { ...info, pic: pic };
+      const bodyWithPicAndPublicKey = {
+        ...info,
+        pic: pic,
+        encodedPublicKey: encodedKeyPair.encodedPublicKey,
+      };
       const { data } = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/user`,
-        bodyWithPic,
+        bodyWithPicAndPublicKey,
         config
       );
       toast({
@@ -103,7 +109,17 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      localStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          ...data,
+          encodedPrivateKey: encodedKeyPair.encodedPrivateKey,
+        })
+      );
+      localStorage.setItem(
+        "encodedPrivateKey",
+        JSON.stringify(encodedKeyPair.encodedPrivateKey)
+      );
       setLoading(false);
       navigate("/chats");
     } catch (error) {
@@ -117,17 +133,6 @@ const Signup = () => {
       });
       setLoading(false);
     }
-  };
-
-  const validatePassword = (value) => {
-    if (value.length < 6) {
-      return "Password should be at-least 6 characters.";
-    } else if (
-      !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#.$*])/.test(value)
-    ) {
-      return "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol.";
-    }
-    return true;
   };
 
   return (
@@ -176,11 +181,19 @@ const Signup = () => {
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input
-            type="password"
+            type={show ? "text" : "password"}
             placeholder="Enter your password"
             {...register("password", {
               required: true,
-              validate: validatePassword,
+              minLength: {
+                value: 6,
+                message: "Password should be at least 6 characters long",
+              },
+              pattern: {
+                value: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#.$*])/,
+                message:
+                  "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol.",
+              },
             })}
           />
           <InputRightElement width="4.5rem">
@@ -205,7 +218,7 @@ const Signup = () => {
         <FormLabel>Confirm password</FormLabel>
         <InputGroup>
           <Input
-            type="password"
+            type={show ? "text" : "password"}
             placeholder="Confirm password"
             {...register("confirmpass", {
               required: true,
