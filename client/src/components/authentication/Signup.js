@@ -110,6 +110,10 @@ const Signup = () => {
           encodedPrivateKey: encodedKeyPair.encodedPrivateKey,
         })
       );
+      localStorage.setItem(
+        "encodedPrivateKey",
+        JSON.stringify(encodedKeyPair.encodedPrivateKey)
+      );
       setLoading(false);
       navigate("/chats");
     } catch (error) {

@@ -15,6 +15,7 @@ const ChatProvider = ({ children }) => {
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const privateKey = JSON.parse(localStorage.getItem("encodedPrivateKey"));
 
     if (userInfo === null) {
       navigate("/");
@@ -23,7 +24,7 @@ const ChatProvider = ({ children }) => {
     // console.log(userInfo);
 
     const keyPair = decodeKeyPair({
-      encodedPrivateKey: userInfo.encodedPrivateKey,
+      encodedPrivateKey: privateKey,
       encodedPublicKey: userInfo.encodedPublicKey,
     });
 
