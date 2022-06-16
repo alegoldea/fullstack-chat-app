@@ -15,11 +15,11 @@ Encryption is based on methods from the TweetNaCl and simple-crypto-js libraries
 
 Clone the project
 
-```git clone https://github.com/piyush-eon/mern-chat-app```
+```git clone https://github.com/alegoldea/fullstack-chat-app.git```
 
 Go to the project directory
 
-```cd mern-chat-app```
+```cd fullstack-chat-app```
 
 Install dependencies
 
