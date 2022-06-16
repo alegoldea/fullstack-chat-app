@@ -4,14 +4,11 @@ Teletype is a fullstack chat app that provides end-to-end encryption for one-to-
 
 ## Stack
 
-Client: React JS
-
-Server: Node JS, Express JS
-
+Client: React JS\
+Server: Node JS, Express JS\
 Database: Mongo DB
 
-Real-time communication is implemented using socket.io library.
-
+Real-time communication is implemented using socket.io library.\
 Encryption is based on methods from the TweetNaCl and simple-crypto-js libraries.
 
 ## Run locally
@@ -55,11 +52,6 @@ npm start
 
 ![5 - photos and emojis](https://user-images.githubusercontent.com/62378466/174053248-064dfb6a-af14-432b-9e05-d77a2b201765.png)
 
-- provides end-to-end encryption for one-to-one conversations 
-
-Each user has a public-private key pair and uses asymmetric encryption to encrypt a symmetric key unique for each conversation. This hybrid cryptosystem makes the process more efficient and secure than using only one type of encryption.
-Asymmetric encryiption is based on EC Diffie Hellman algorithm, whereas symmetric encryption is done using AES-256.
-
 - sign up form 
 - real-time messaging 
 - image sending 
@@ -68,14 +60,18 @@ Asymmetric encryiption is based on EC Diffie Hellman algorithm, whereas symmetri
 - CRUD group update form 
 - non-persistent notifications regarding new messages
 - typing indicator
+- provides end-to-end encryption for one-to-one conversations 
+
+Each user has a public-private key pair and uses asymmetric encryption to encrypt a symmetric key unique for each conversation.\ 
+This hybrid cryptosystem makes the process more efficient and secure than using only one type of encryption.\
+Asymmetric encryiption is based on EC Diffie Hellman algorithm, whereas symmetric encryption is done using AES-256.
+
 
 # Limitations 
 
-Given the principles of end-to-end encryption and the limitations of developing a web application, the login feature is only working for the device and browser that the account was created in.
-At this moment, there is no mechanism for accessing messages from other devices, as the private key of the user is stored in the local storage of the browser. 
-This key should be a secret and should not be distributed. 
-Also, the end-to-end encryption only solves the aspect of storing the messages in an encrypted format. 
-Aspect such as forward secrecy are yet to be considered. 
-Future development of this project should improve the encryption feature. 
+- Given the principles of end-to-end encryption and the limitations of developing a web application, the login feature is only working for the device and browser that the account was created in. At this moment, there is no mechanism for accessing messages from other devices, as the private key of the user is stored in the local storage of the browser. This key should be a secret and should not be distributed. <br />
+- Also, the end-to-end encryption only solves the aspect of storing the messages in an encrypted format. Aspect such as forward secrecy are yet to be considered.<br /> 
+
+Future development of this project should improve the encryption feature and also implement it for group chats.
 
 
