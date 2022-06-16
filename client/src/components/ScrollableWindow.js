@@ -30,7 +30,7 @@ const ScrollableWindow = ({
         const decryptedContent = chatKey.decrypt(m.content);
         return { ...m, content: decryptedContent };
       } catch (error) {
-        console.log("Error decrypt:", m.content);
+        console.log("Error decrypting:", m.content);
         return { ...m, content: "Couldn't decrypt message. Invalid format." };
       }
     });
@@ -43,6 +43,7 @@ const ScrollableWindow = ({
         <div
           style={{
             display: "flex",
+            overflowY: "hidden",
           }}
           key={m._id}
         >

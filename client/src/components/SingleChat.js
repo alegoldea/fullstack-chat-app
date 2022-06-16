@@ -239,6 +239,32 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
   }, [user]);
 
   useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        if (
+          // TODO: check this for groups
+          // !notification.includes(newMessageReceived)
+          !notification.some(
+            (n) => n.sender.name === newMessageReceived.sender.name
+          )
+        ) {
+          setNotification([newMessageReceived, ...notification]);
+        }
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+      setFetchContent(!fetchContent);
+    });
+
+    return () => {
+      socket.off("message received");
+    };
+  });
+
+  useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
     if (!selectedChat) return;
@@ -269,32 +295,6 @@ const SingleChat = ({ fetchContent, setFetchContent }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
-
-  useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (
-        !selectedChatCompare ||
-        selectedChatCompare._id !== newMessageReceived.chat._id
-      ) {
-        if (
-          // TODO: check this for groups
-          // !notification.includes(newMessageReceived)
-          !notification.some(
-            (n) => n.sender.name === newMessageReceived.sender.name
-          )
-        ) {
-          setNotification([newMessageReceived, ...notification]);
-        }
-      } else {
-        setMessages([...messages, newMessageReceived]);
-      }
-      setFetchContent(!fetchContent);
-    });
-
-    return () => {
-      socket.off("message received");
-    };
-  });
 
   useEffect(() => {
     newMessage

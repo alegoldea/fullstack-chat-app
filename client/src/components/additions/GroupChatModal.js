@@ -48,6 +48,13 @@ const GroupChatModal = ({ children }) => {
       );
       setLoading(false);
       setSearchResult(data);
+      toast({
+        title: "Group created",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
     } catch (error) {
       toast({
         title: "Error occured",
@@ -99,7 +106,7 @@ const GroupChatModal = ({ children }) => {
       });
     } catch (error) {
       toast({
-        title: "Failed to create group chat",
+        title: "Failed to create group chat. Select at least 2 users to add.",
         status: "error",
         duration: 5000,
         isClosable: true,
