@@ -74,4 +74,8 @@ Asymmetric encryiption is based on EC Diffie Hellman algorithm, whereas symmetri
 
 Future development of this project should improve the encryption feature and also implement it for group chats.
 
+# Inspired by
+
+[MERN Chat App](https://github.com/piyush-eon)
+
 
